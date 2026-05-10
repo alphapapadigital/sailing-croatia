@@ -1,0 +1,2166 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0B2545" />
+<title>Sailing Croatia · 30.05 – 06.06.2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+<style>
+  :root{
+    --navy:#0B2545;
+    --navy-2:#13355B;
+    --teal:#0E7C7B;
+    --sand:#F5EBDD;
+    --cream:#FAF7F2;
+    --coral:#D9744F;
+    --coral-soft:#E89A7C;
+    --gold:#C8A25B;
+    --ink:#1A1A1A;
+    --muted:#6B6F76;
+    --line:rgba(11,37,69,.10);
+    --shadow:0 10px 30px rgba(11,37,69,.08);
+    --radius:18px;
+    --max:560px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--ink);
+    background:var(--cream);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 18px 80px}
+  h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;font-weight:700;letter-spacing:-.01em;margin:0}
+  h1{font-size:34px;line-height:1.05}
+  h2{font-size:24px;line-height:1.15}
+  h3{font-size:19px}
+  h4{font-size:16px;font-weight:600}
+  p{margin:0 0 10px}
+  a{color:var(--teal);text-decoration:none;border-bottom:1px dotted rgba(14,124,123,.4)}
+  a:hover{border-bottom-style:solid}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    color:#fff;
+    background:
+      radial-gradient(120% 80% at 80% 10%, rgba(216,116,79,.55), transparent 55%),
+      radial-gradient(140% 90% at 10% 90%, rgba(14,124,123,.55), transparent 55%),
+      linear-gradient(180deg,#0B2545 0%, #13355B 60%, #0E7C7B 130%);
+    padding:48px 22px 120px;
+    border-radius:0 0 32px 32px;
+    margin-bottom:-90px;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;inset:auto 0 0 0;height:140px;
+    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 140' preserveAspectRatio='none'><path d='M0 80 C 90 30 180 130 300 80 S 510 30 600 80 L600 140 L0 140 Z' fill='%23FAF7F2'/></svg>") center bottom/cover no-repeat;
+  }
+  .eyebrow{
+    display:inline-block;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    padding:6px 12px;border:1px solid rgba(255,255,255,.4);border-radius:999px;
+    color:rgba(255,255,255,.9);margin-bottom:18px;
+  }
+  .hero h1{color:#fff;font-size:40px;line-height:1.02}
+  .hero h1 em{font-style:italic;color:var(--coral-soft);font-weight:500}
+  .hero .dates{margin-top:14px;font-size:15px;letter-spacing:.04em;color:rgba(255,255,255,.85)}
+  .hero .meta{
+    margin-top:22px;display:flex;gap:8px;flex-wrap:wrap;
+  }
+  .chip{
+    background:rgba(255,255,255,.12);
+    color:#fff;border:1px solid rgba(255,255,255,.2);
+    padding:6px 12px;border-radius:999px;font-size:12px;font-weight:500;
+    backdrop-filter:blur(6px);
+  }
+
+  /* ---------- ROUTE STRIP ---------- */
+  .routecard{
+    position:relative;z-index:2;
+    background:#fff;border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:18px 18px 8px;
+    margin-bottom:22px;
+  }
+  .routecard h2{font-size:20px;margin-bottom:6px}
+  .routecard .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+  .routelist{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0;position:relative}
+  .routelist::before{
+    content:"";position:absolute;left:11px;top:8px;bottom:8px;width:2px;
+    background:linear-gradient(180deg,var(--coral) 0%, var(--gold) 50%, var(--teal) 100%);
+    border-radius:2px;opacity:.55;
+  }
+  .routelist li{display:flex;gap:12px;padding:8px 0;align-items:center;font-size:14px}
+  .routelist .dot{
+    width:24px;height:24px;border-radius:50%;
+    background:#fff;border:2px solid var(--coral);
+    display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--coral);
+    flex:0 0 auto;z-index:1;
+  }
+  .routelist .day{font-weight:600;color:var(--navy);min-width:78px}
+  .routelist .place{color:#222;flex:1}
+  .routelist .nm{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+
+  /* ---------- DAY CARDS ---------- */
+  section.day{
+    background:#fff;border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    margin-bottom:14px;overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .day > header{
+    display:flex;align-items:center;gap:12px;
+    padding:16px 16px 14px;
+    cursor:pointer;
+    background:linear-gradient(180deg,#fff 0%, #FBF7F0 100%);
+    user-select:none;
+  }
+  .day .num{
+    width:42px;height:42px;border-radius:12px;
+    background:var(--navy);color:#fff;
+    display:grid;place-items:center;font-family:'Playfair Display',serif;font-size:18px;
+    flex:0 0 auto;
+  }
+  .day .titles{flex:1;min-width:0}
+  .day .titles .when{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);font-weight:600}
+  .day .titles h3{margin-top:2px}
+  .day .titles .leg{color:var(--muted);font-size:13px;margin-top:2px}
+  .day .caret{
+    width:28px;height:28px;border-radius:50%;
+    border:1px solid var(--line);color:var(--navy);
+    display:grid;place-items:center;flex:0 0 auto;
+    transition:transform .25s ease;
+  }
+  .day[open] .caret{transform:rotate(180deg)}
+
+  .day .body{padding:4px 16px 18px}
+  .day .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+    margin:6px 0 16px;
+  }
+  .day .stat{
+    background:var(--sand);border-radius:12px;padding:10px 10px;text-align:center;
+  }
+  .day .stat .k{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .day .stat .v{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);margin-top:3px}
+
+  .block{margin-top:14px}
+  .block h4{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--navy)}
+  .block h4 .icon{
+    width:24px;height:24px;border-radius:8px;background:var(--sand);
+    display:grid;place-items:center;font-size:13px;
+  }
+  .block ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+  .block li{
+    background:#FBF8F2;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px;
+  }
+  .block li b{color:var(--navy);font-weight:600}
+  .block li .tag{
+    display:inline-block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--coral);font-weight:700;margin-right:6px;
+  }
+  .pricing{color:var(--gold);font-weight:600;letter-spacing:.05em}
+  .note{
+    margin-top:12px;font-size:13px;color:var(--muted);
+    background:rgba(14,124,123,.06);border-left:3px solid var(--teal);
+    padding:10px 12px;border-radius:8px;
+  }
+  .note b{color:var(--teal)}
+
+  /* ---------- PRE / POST CARDS ---------- */
+  .stay{
+    background:linear-gradient(180deg,#fff 0%, #FBF6EC 100%);
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;margin-bottom:14px;box-shadow:var(--shadow);
+  }
+  .stay .when{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);font-weight:700}
+  .stay h3{margin:4px 0 4px}
+  .stay .who{color:var(--muted);font-size:13px;margin-bottom:10px}
+
+  /* ---------- SECTION DIVIDERS ---------- */
+  .section-h{
+    display:flex;align-items:center;gap:12px;margin:28px 0 14px;
+  }
+  .section-h h2{flex:1}
+  .section-h .line{height:1px;background:var(--line);flex:0 0 40px}
+
+  /* ---------- VOTE / FOOD PLACEHOLDERS ---------- */
+  .planner{
+    background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:18px;border:1px solid var(--line);margin-bottom:14px;
+  }
+  .planner .small{color:var(--muted);font-size:13px;margin-bottom:10px}
+  .vote{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:10px 12px;background:#FBF8F2;border:1px solid var(--line);
+    border-radius:12px;margin-bottom:8px;font-size:14px;
+  }
+  .vote button{
+    border:none;background:var(--navy);color:#fff;padding:6px 12px;border-radius:999px;
+    font-size:12px;font-weight:600;cursor:pointer;
+  }
+  .vote button.on{background:var(--coral)}
+  .vote .count{font-size:12px;color:var(--muted);min-width:42px;text-align:right}
+
+  .foodboard{display:grid;grid-template-columns:1fr;gap:8px}
+  .foodrow{
+    display:grid;grid-template-columns:78px 1fr;gap:10px;align-items:center;
+    background:#FBF8F2;border:1px solid var(--line);border-radius:12px;padding:10px 12px;
+  }
+  .foodrow .d{font-weight:700;color:var(--navy);font-size:13px}
+  .foodrow input{
+    width:100%;border:none;background:transparent;font:inherit;color:var(--ink);
+    outline:none;font-size:14px;
+  }
+  .foodrow input::placeholder{color:#B7BAC0}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    text-align:center;color:var(--muted);font-size:12px;margin-top:24px;
+    padding-top:18px;border-top:1px dashed var(--line);
+  }
+  footer .heart{color:var(--coral)}
+
+  /* ---------- HELPERS ---------- */
+  .pill{
+    display:inline-block;padding:3px 8px;border-radius:999px;
+    font-size:11px;font-weight:600;letter-spacing:.04em;
+    background:var(--sand);color:var(--navy);
+  }
+  .pill.coral{background:rgba(217,116,79,.12);color:var(--coral)}
+  .pill.teal{background:rgba(14,124,123,.12);color:var(--teal)}
+
+  details summary{list-style:none}
+  details summary::-webkit-details-marker{display:none}
+
+  @media (min-width:600px){
+    .hero{padding:64px 32px 130px;border-radius:0 0 40px 40px}
+    .hero h1{font-size:48px}
+  }
+
+  /* ---------- LOGIN OVERLAY ---------- */
+  .lock{
+    position:fixed;inset:0;z-index:1000;
+    background:
+      radial-gradient(120% 80% at 80% 10%, rgba(216,116,79,.55), transparent 55%),
+      radial-gradient(140% 90% at 10% 90%, rgba(14,124,123,.55), transparent 55%),
+      linear-gradient(180deg,#0B2545 0%, #13355B 60%, #0E7C7B 130%);
+    display:grid;place-items:center;padding:20px;
+  }
+  .lock.hidden{display:none}
+  .lock-card{
+    background:#fff;border-radius:24px;padding:30px 24px 24px;
+    width:100%;max-width:340px;box-shadow:0 30px 60px rgba(0,0,0,.35);
+    text-align:center;
+  }
+  .lock-card h2{margin-bottom:6px}
+  .lock-card .tag{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--coral);font-weight:700;margin-bottom:14px}
+  .lock-card p{color:var(--muted);font-size:13px;margin-bottom:16px}
+  .lock-card input{
+    width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;
+    font:inherit;font-size:14px;margin-bottom:8px;outline:none;color:var(--ink);
+    background:#FBF8F2;
+  }
+  .lock-card input:focus{border-color:var(--coral);background:#fff}
+  .lock-card button{
+    width:100%;padding:13px;background:var(--coral);color:#fff;border:none;
+    border-radius:12px;font:inherit;font-weight:700;cursor:pointer;margin-top:6px;
+    letter-spacing:.04em;
+  }
+  .lock-card button:hover{background:#C5673F}
+  .lock-card .hint{font-size:11px;color:var(--muted);margin-top:14px}
+  .lock-card .err{color:var(--coral);font-size:13px;margin:4px 0;min-height:18px;font-weight:600}
+
+  /* ---------- MAP CARD ---------- */
+  .mapcard{
+    background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:18px;margin-bottom:14px;overflow:hidden;
+  }
+  .mapcard h2{margin-bottom:6px}
+  .mapcard .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+  .mapcard .leafmap{width:100%;height:340px;border-radius:14px;background:#e6e8ec;z-index:0}
+  .monamap{
+    width:100%;height:280px;border-radius:14px;background:rgba(0,0,0,.18);
+    margin-top:14px;z-index:0;border:1px solid rgba(255,255,255,.15);
+  }
+  .listcard .monahint{
+    font-size:11px;color:rgba(255,255,255,.7);margin-top:8px;position:relative;
+    display:flex;align-items:center;gap:8px;
+  }
+  .pin-mona{
+    width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+    border:2px solid #fff;background:var(--coral);
+    display:grid;place-items:center;box-shadow:0 3px 6px rgba(0,0,0,.35);
+  }
+  .pin-mona span{transform:rotate(45deg);color:#fff;font-size:10px;font-weight:700}
+  .pin-mona.t{background:var(--teal)}
+  .pin-mona.g{background:var(--gold)}
+  .pin-mona.n{background:var(--navy)}
+  .mapcard .legend{
+    display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;padding-top:10px;
+    border-top:1px dashed var(--line);font-size:11px;color:var(--muted);
+  }
+  .mapcard .legend .leg{display:inline-flex;align-items:center;gap:6px}
+  .mapcard .legend .ldot{width:10px;height:10px;border-radius:50%;display:inline-block;border:2px solid #fff;box-shadow:0 0 0 1px var(--navy)}
+  .mapcard .legend .ldot.a{background:var(--coral)}
+  .mapcard .legend .ldot.m{background:var(--teal)}
+  .mapcard .legend .lline{display:inline-block;width:18px;height:3px;background:var(--coral);border-radius:2px}
+  /* Leaflet marker pin (custom) */
+  .pin{
+    width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+    border:2px solid #fff;display:grid;place-items:center;
+    box-shadow:0 4px 8px rgba(0,0,0,.35);
+  }
+  .pin.coral{background:var(--coral)}
+  .pin.teal{background:var(--teal)}
+  .pin.navy{background:var(--navy)}
+  .pin span{transform:rotate(45deg);color:#fff;font-weight:700;font-size:13px;font-family:'Playfair Display',serif}
+  .leaflet-popup-content{font-family:'Inter',sans-serif;font-size:13px;line-height:1.4}
+  .leaflet-popup-content b{color:var(--navy);font-family:'Playfair Display',serif;font-size:15px;display:block;margin-bottom:2px}
+  .leaflet-popup-content .stat{font-size:11px;color:var(--muted);margin-top:4px}
+
+  /* ---------- MONA LIST CARD ---------- */
+  .listcard{
+    background:linear-gradient(135deg,#0E7C7B 0%,#0B2545 100%);
+    color:#fff;border-radius:var(--radius);padding:22px 20px;
+    margin-bottom:14px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .listcard::before{
+    content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;
+    border-radius:50%;background:rgba(216,116,79,.25);
+  }
+  .listcard h3{color:#fff;margin-bottom:6px;position:relative}
+  .listcard p{color:rgba(255,255,255,.85);font-size:13px;margin-bottom:14px;position:relative}
+  .listcard .meta{
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:rgba(255,255,255,.7);margin-bottom:8px;position:relative;font-weight:600;
+  }
+  .listcard .btn{
+    display:inline-flex;align-items:center;gap:8px;background:var(--coral);color:#fff;
+    padding:11px 18px;border-radius:12px;font-weight:700;text-decoration:none;
+    border:none;font-size:14px;border-bottom:none;position:relative;
+  }
+  .listcard .btn:hover{background:#C5673F;border-bottom:none}
+  .listcard .badge{
+    display:inline-block;background:rgba(255,255,255,.15);color:#fff;
+    padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;
+    margin-left:8px;position:relative;
+  }
+
+  /* ---------- CREW LIST ---------- */
+  .who-am-i{
+    display:flex;justify-content:space-between;align-items:center;
+    background:linear-gradient(180deg,var(--sand) 0%,#FBF6EC 100%);
+    border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:13px;
+  }
+  .who-am-i b{color:var(--navy)}
+  .who-am-i .logout{
+    background:none;border:none;color:var(--coral);font-size:12px;
+    cursor:pointer;text-decoration:underline;font-weight:600;padding:0;
+  }
+  .crewlist{display:grid;grid-template-columns:1fr;gap:10px}
+  .crewrow{
+    background:#FBF8F2;border:1px solid var(--line);border-radius:14px;padding:12px 14px;
+  }
+  .crewrow.me{border-color:var(--coral);background:linear-gradient(180deg,#FFF3EC 0%,#FBF8F2 100%)}
+  .crewrow .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .crewrow .name{font-weight:700;color:var(--navy);font-size:15px;display:flex;align-items:center;gap:8px}
+  .crewrow .name .dotme{
+    display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--coral);
+  }
+  .crewrow .x{
+    background:none;border:none;color:#B8B8B8;cursor:pointer;font-size:20px;
+    padding:0 4px;line-height:1;
+  }
+  .crewrow .x:hover{color:var(--coral)}
+  .crewrow .fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+  .crewrow input,.crewrow textarea{
+    width:100%;border:1px solid var(--line);background:#fff;border-radius:8px;
+    padding:8px 10px;font:inherit;font-size:13px;color:var(--ink);outline:none;
+  }
+  .crewrow textarea{resize:vertical;min-height:54px;line-height:1.4}
+  .crewrow input:focus,.crewrow textarea:focus{border-color:var(--coral)}
+  .crewrow label{
+    font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);font-weight:700;display:block;margin-bottom:4px;
+  }
+  .add-crew{display:flex;gap:6px;margin-top:10px}
+  .add-crew input{
+    flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+    font:inherit;font-size:13px;outline:none;background:#fff;
+  }
+  .add-crew button{
+    background:var(--navy);color:#fff;border:none;padding:0 18px;border-radius:10px;
+    font:inherit;font-weight:700;cursor:pointer;font-size:14px;
+  }
+
+  /* ---------- BOAT CARD ---------- */
+  .boatcard{
+    background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+    margin-bottom:14px;overflow:hidden;border:1px solid var(--line);
+  }
+  .boatcard .heroimg{
+    width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:#e6e8ec;
+  }
+  .boatcard .body{padding:18px}
+  .boatcard .meta{
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--coral);font-weight:700;margin-bottom:6px;
+  }
+  .boatcard h2{margin-bottom:4px;font-size:26px}
+  .boatcard h2 em{font-style:italic;color:var(--coral);font-weight:500}
+  .boatcard .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+  .boatcard .specs{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;
+  }
+  .boatcard .spec{
+    background:var(--sand);border-radius:12px;padding:12px 6px;text-align:center;
+  }
+  .boatcard .spec .v{
+    font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);
+    line-height:1;font-weight:700;
+  }
+  .boatcard .spec .k{
+    font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);font-weight:700;margin-top:5px;
+  }
+  .boatcard .equiptitle{
+    font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--navy);font-weight:700;margin:6px 0 8px;
+  }
+  .boatcard .equipchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+  .boatcard .equipchip{
+    background:#FBF8F2;border:1px solid var(--line);border-radius:999px;
+    padding:6px 11px;font-size:11px;color:var(--navy);font-weight:600;
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  .boatcard .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+  .boatcard .gallery img{
+    width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;display:block;
+    cursor:zoom-in;background:#e6e8ec;transition:transform .2s ease;
+  }
+  .boatcard .gallery img:hover{transform:scale(1.04)}
+  .boatcard .ctaline{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    border-top:1px dashed var(--line);padding-top:14px;flex-wrap:wrap;
+  }
+  .boatcard .marina{font-size:13px;color:var(--muted);line-height:1.4}
+  .boatcard .marina b{color:var(--navy)}
+  .boatcard .ctaline a{
+    background:var(--navy);color:#fff;padding:10px 14px;border-radius:10px;
+    font-size:13px;font-weight:700;text-decoration:none;border-bottom:none;
+    white-space:nowrap;
+  }
+  .boatcard .ctaline a:hover{background:var(--navy-2);border-bottom:none}
+
+  /* Lightbox */
+  .lightbox{
+    position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:999;
+    display:none;place-items:center;padding:20px;
+  }
+  .lightbox.show{display:grid}
+  .lightbox img{
+    max-width:100%;max-height:90vh;border-radius:12px;
+    box-shadow:0 30px 60px rgba(0,0,0,.6);
+  }
+  .lightbox .close{
+    position:absolute;top:18px;right:18px;color:#fff;background:rgba(255,255,255,.18);
+    border:none;width:42px;height:42px;border-radius:50%;font-size:22px;cursor:pointer;
+    display:grid;place-items:center;line-height:1;
+  }
+
+  @media (max-width:380px){
+    .boatcard .specs{grid-template-columns:repeat(2,1fr)}
+  }
+
+  /* ---------- CREW PICKS FORM ---------- */
+  .picks-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .picks-form .span2{grid-column:span 2}
+  .picks-form input,.picks-form select{
+    width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+    font:inherit;font-size:13px;outline:none;background:#fff;color:var(--ink);
+  }
+  .picks-form input:focus,.picks-form select:focus{border-color:var(--coral)}
+  .picks-form button{
+    grid-column:span 2;background:var(--coral);color:#fff;border:none;
+    padding:12px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer;font-size:14px;
+  }
+  .picks-form button:hover{background:#C5673F}
+  .bulk-toggle{
+    background:none;border:none;color:var(--teal);font-size:12px;cursor:pointer;
+    padding:6px 0;text-decoration:underline;font-weight:600;grid-column:span 2;
+  }
+  .bulk-area{display:none;grid-column:span 2}
+  .bulk-area.show{display:block}
+  .bulk-area textarea{
+    width:100%;min-height:90px;padding:10px 12px;border:1px solid var(--line);
+    border-radius:10px;font:inherit;font-size:12px;outline:none;background:#fff;
+    color:var(--ink);resize:vertical;font-family:ui-monospace,Menlo,monospace;
+  }
+  .picklist{display:grid;gap:6px;margin-top:10px}
+  .pick-item{
+    display:flex;align-items:center;gap:10px;
+    background:#FBF8F2;border:1px solid var(--line);border-radius:10px;
+    padding:8px 12px;font-size:13px;flex-wrap:wrap;
+  }
+  .pick-item .where{
+    font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    background:var(--coral);color:#fff;padding:3px 8px;border-radius:999px;font-weight:700;
+    flex:0 0 auto;
+  }
+  .pick-item .pname{flex:1;min-width:0}
+  .pick-item .pname b{color:var(--navy)}
+  .pick-item .who{color:var(--muted);font-size:11px}
+  .pick-item .x{
+    background:none;border:none;color:#B8B8B8;cursor:pointer;font-size:18px;
+    line-height:1;padding:0 4px;
+  }
+  .pick-item .x:hover{color:var(--coral)}
+
+  /* Crew picks block (auto-injected into days) */
+  .crew-picks-block{
+    background:linear-gradient(180deg,#FFF3EC 0%, #FBF8F2 100%);
+    border:1px solid rgba(216,116,79,.3);
+    border-radius:12px;padding:12px 14px;margin-top:14px;
+  }
+  .crew-picks-block h4{
+    display:flex;align-items:center;gap:8px;margin-bottom:10px;color:var(--coral);
+  }
+  .crew-picks-block h4 .icon{
+    width:24px;height:24px;border-radius:8px;background:rgba(216,116,79,.15);
+    display:grid;place-items:center;font-size:13px;
+  }
+  .crew-picks-block ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+  .crew-picks-block li{font-size:13px;padding:6px 0;border-bottom:1px dashed rgba(216,116,79,.18)}
+  .crew-picks-block li:last-child{border-bottom:none}
+  .crew-picks-block li b{color:var(--navy)}
+  .crew-picks-block li .src{color:var(--muted);font-size:11px;margin-left:6px;font-style:italic}
+
+  /* ---------- SHOPPING LIST ---------- */
+  .shop{margin-top:10px}
+  .shop-cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+  .shop-cat{
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:6px 12px;font-size:12px;color:var(--navy);cursor:pointer;font-weight:600;
+  }
+  .shop-cat.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .shop-add{display:grid;grid-template-columns:1fr 70px 100px auto;gap:6px;margin-bottom:10px}
+  .shop-add input,.shop-add select{
+    padding:9px 10px;border:1px solid var(--line);border-radius:10px;
+    font:inherit;font-size:13px;outline:none;background:#fff;color:var(--ink);
+  }
+  .shop-add button{
+    background:var(--teal);color:#fff;border:none;padding:0 14px;border-radius:10px;
+    font:inherit;font-weight:700;cursor:pointer;font-size:14px;
+  }
+  .shop-list{display:grid;gap:6px}
+  .shop-item{
+    display:grid;grid-template-columns:24px 1fr auto auto auto;gap:10px;align-items:center;
+    background:#FBF8F2;border:1px solid var(--line);border-radius:10px;
+    padding:8px 12px;font-size:13px;
+  }
+  .shop-item.done{opacity:.55;background:#EFEAE0}
+  .shop-item.done .name{text-decoration:line-through}
+  .shop-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--teal);cursor:pointer}
+  .shop-item .name{font-weight:600;color:var(--navy)}
+  .shop-item .meta{color:var(--muted);font-size:11px}
+  .shop-item .qty{
+    background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 8px;
+    font-size:12px;font-weight:700;color:var(--navy);
+  }
+  .shop-item .x{
+    background:none;border:none;color:#B8B8B8;cursor:pointer;font-size:16px;
+    line-height:1;padding:0 4px;
+  }
+  .shop-item .x:hover{color:var(--coral)}
+  .shop-cat-tag{
+    font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+    padding:2px 7px;border-radius:999px;color:#fff;background:var(--navy);
+  }
+  .shop-cat-tag.gemuse{background:#0E7C7B}
+  .shop-cat-tag.brot{background:#C8A25B}
+  .shop-cat-tag.fleisch{background:#D9744F}
+  .shop-cat-tag.dairy{background:#8FB3D6}
+  .shop-cat-tag.snacks{background:#B19CD9}
+  .shop-cat-tag.getranke{background:#0B2545}
+  .shop-cat-tag.sonstiges{background:#6B6F76}
+
+  /* ---------- IDEAS BRAINSTORM ---------- */
+  .ideas-add{display:flex;gap:6px;margin-bottom:10px}
+  .ideas-add input{
+    flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+    font:inherit;font-size:13px;outline:none;background:#fff;
+  }
+  .ideas-add button{
+    background:var(--coral);color:#fff;border:none;padding:0 16px;border-radius:10px;
+    font:inherit;font-weight:700;cursor:pointer;font-size:14px;
+  }
+  .ideas-list{display:grid;gap:6px}
+  .idea{
+    display:flex;align-items:flex-start;gap:10px;
+    background:linear-gradient(180deg,#FFF8F0 0%,#FBF6EC 100%);
+    border:1px solid rgba(216,116,79,.2);border-radius:10px;padding:10px 12px;font-size:13px;
+  }
+  .idea .ico{font-size:16px;flex:0 0 auto}
+  .idea .txt{flex:1}
+  .idea .by{color:var(--muted);font-size:11px;margin-top:2px;font-style:italic}
+  .idea .x{
+    background:none;border:none;color:#B8B8B8;cursor:pointer;font-size:16px;
+    line-height:1;padding:0 4px;
+  }
+  .idea .x:hover{color:var(--coral)}
+
+  .tabs{
+    display:flex;gap:0;background:#FBF8F2;border:1px solid var(--line);
+    border-radius:12px;padding:4px;margin-bottom:14px;
+  }
+  .tabs button{
+    flex:1;background:none;border:none;padding:9px;font:inherit;font-size:13px;
+    font-weight:700;color:var(--muted);cursor:pointer;border-radius:8px;
+  }
+  .tabs button.on{background:#fff;color:var(--navy);box-shadow:0 2px 6px rgba(11,37,69,.08)}
+  .tabpane{display:none}
+  .tabpane.on{display:block}
+
+  /* Admin-only sections (default hidden, body.is-admin reveals) */
+  .picks-admin{display:none}
+  body.is-admin .picks-admin{display:block}
+  .admin-badge{
+    display:inline-block;background:rgba(216,116,79,.15);color:var(--coral);
+    padding:3px 9px;border-radius:999px;font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;font-weight:700;margin-left:8px;vertical-align:middle;
+  }
+
+  /* Crew row enhancements: nick / role / task */
+  .crewrow .nickrole{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+  .crewrow .role-tag{
+    display:inline-flex;align-items:center;gap:6px;
+    background:linear-gradient(135deg,var(--navy) 0%,var(--teal) 100%);
+    color:#fff;padding:4px 10px;border-radius:999px;font-size:11px;
+    font-weight:700;margin-left:8px;
+  }
+  .crewrow.captain .role-tag{
+    background:linear-gradient(135deg,var(--coral) 0%,var(--gold) 100%);
+  }
+  .crewrow .task-display{
+    background:#FBF6EC;border-left:3px solid var(--coral);
+    border-radius:6px;padding:6px 10px;font-size:12px;color:var(--muted);
+    font-style:italic;margin-bottom:8px;
+  }
+  .crewrow .task-display b{color:var(--navy);font-style:normal}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN OVERLAY ============ -->
+<div class="lock" id="lock">
+  <div class="lock-card">
+    <div class="tag">⛵ Crew Access</div>
+    <h2>Welcome an Bord</h2>
+    <p>Trag deinen Namen ein und das Crew-Passwort.</p>
+    <input id="login-name" placeholder="Dein Name" autocomplete="given-name" />
+    <input id="login-pw" type="password" placeholder="Crew-Passwort" autocomplete="off" />
+    <div class="err" id="login-err">&nbsp;</div>
+    <button id="login-go">Einsteigen</button>
+    <div class="hint">Passwort bei André erfragen oder in der WhatsApp-Gruppe unter „Gruppeninfo" nachschauen ✌️</div>
+  </div>
+</div>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <span class="eyebrow">Crew Itinerary · v1</span>
+  <h1>Sailing <em>Croatia</em><br/>Mittel&shy;dalmatien</h1>
+  <div class="dates">Sa 30. Mai &nbsp;–&nbsp; Sa 6. Juni 2026</div>
+  <div class="meta">
+    <span class="chip">⛵️ Catamaran</span>
+    <span class="chip">📍 SCT Marina Trogir</span>
+    <span class="chip">🗺️ ~115 NM</span>
+    <span class="chip">🏝️ 7 Stops</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ BOAT CARD ============ -->
+  <div class="boatcard">
+    <img class="heroimg" loading="lazy"
+      src="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc4987c4ee0e43702c06.jpg?method=fit&width=1000&height=620&format=jpeg"
+      alt="Lagoon 46 Coolway" />
+    <div class="body">
+      <div class="meta">⛵ Unser Boot · Baujahr 2022</div>
+      <h2>Lagoon 46 · <em>Coolway</em></h2>
+      <p class="sub">14m Performance-Katamaran · Charter <b>More Sailing</b> · ab/an SCT Marina Trogir</p>
+
+      <div class="specs">
+        <div class="spec"><div class="v">12</div><div class="k">Pax</div></div>
+        <div class="spec"><div class="v">6</div><div class="k">Kabinen</div></div>
+        <div class="spec"><div class="v">4</div><div class="k">Bäder</div></div>
+        <div class="spec"><div class="v">14&thinsp;m</div><div class="k">Länge</div></div>
+      </div>
+
+      <div class="equiptitle">Layout</div>
+      <div class="equipchips">
+        <span class="equipchip">🛏️ 4 × Doppelkabine</span>
+        <span class="equipchip">🛏️ 2 × Einzelkabine</span>
+        <span class="equipchip">🛋️ 2 Salon-Betten (Reserve)</span>
+        <span class="equipchip">🚿 4 × Bad mit Dusche</span>
+      </div>
+
+      <div class="equiptitle">Komfort &amp; Tech</div>
+      <div class="equipchips">
+        <span class="equipchip">📶 WLAN gratis</span>
+        <span class="equipchip">❄️ Klimaanlage</span>
+        <span class="equipchip">🔌 Generator</span>
+        <span class="equipchip">☂️ Bimini</span>
+        <span class="equipchip">🛟 Außenborder inkl.</span>
+        <span class="equipchip">📺 Flatscreen</span>
+        <span class="equipchip">🔊 Sound innen + außen</span>
+        <span class="equipchip">🧭 Außen-GPS-Plotter</span>
+        <span class="equipchip">⚡ Elektrische Winden</span>
+      </div>
+
+      <div class="equiptitle">Galley</div>
+      <div class="equipchips">
+        <span class="equipchip">☕ Kaffeemaschine</span>
+        <span class="equipchip">🧊 Eismaschine</span>
+        <span class="equipchip">🍽️ Geschirrspüler</span>
+        <span class="equipchip">🔥 Mikrowelle</span>
+        <span class="equipchip">🥶 Gefrierschrank</span>
+      </div>
+
+      <div class="equiptitle">Inkludiert</div>
+      <div class="equipchips">
+        <span class="equipchip">🛏️ Bettwäsche</span>
+        <span class="equipchip">🧖 Handtuchset</span>
+        <span class="equipchip">🛡️ Kautionsversicherung</span>
+        <span class="equipchip">🏝️ Touristensteuer</span>
+      </div>
+
+      <div class="equiptitle">Bilder</div>
+      <div class="gallery">
+        <img loading="lazy" alt="Coolway"
+          src="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc4f87c4ee0e43702c16.jpg?method=crop&width=320&height=320&format=jpeg"
+          data-full="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc4f87c4ee0e43702c16.jpg?method=fit&width=1600&height=1100&format=jpeg" />
+        <img loading="lazy" alt="Coolway"
+          src="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc5087c4ee0e43702c18.jpg?method=crop&width=320&height=320&format=jpeg"
+          data-full="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc5087c4ee0e43702c18.jpg?method=fit&width=1600&height=1100&format=jpeg" />
+        <img loading="lazy" alt="Coolway"
+          src="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc4a87c4ee0e43702c0a.jpg?method=crop&width=320&height=320&format=jpeg"
+          data-full="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc4a87c4ee0e43702c0a.jpg?method=fit&width=1600&height=1100&format=jpeg" />
+        <img loading="lazy" alt="Coolway"
+          src="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc4b87c4ee0e43702c0c.jpg?method=crop&width=320&height=320&format=jpeg"
+          data-full="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc4b87c4ee0e43702c0c.jpg?method=fit&width=1600&height=1100&format=jpeg" />
+        <img loading="lazy" alt="Coolway"
+          src="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc4c87c4ee0e43702c0e.jpg?method=crop&width=320&height=320&format=jpeg"
+          data-full="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc4c87c4ee0e43702c0e.jpg?method=fit&width=1600&height=1100&format=jpeg" />
+        <img loading="lazy" alt="Coolway"
+          src="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc4d87c4ee0e43702c10.jpg?method=crop&width=320&height=320&format=jpeg"
+          data-full="https://imageresizer.yachtsbt.com/boats/619f47fa7a02ba5d8e55cf11/62a9bc4d87c4ee0e43702c10.jpg?method=fit&width=1600&height=1100&format=jpeg" />
+      </div>
+
+      <div class="ctaline">
+        <div class="marina">📍 <b>SCT Marina Trogir</b><br>1 km zur Altstadt · 7 km Flughafen · Tankstelle, Supermarkt, Duschen vor Ort</div>
+        <a href="https://www.boataround.com/de/boot/lagoon-46-coolway?checkIn=2026-05-30&checkOut=2026-06-06" target="_blank" rel="noopener">Auf Boataround →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LIGHTBOX ============ -->
+  <div class="lightbox" id="lightbox">
+    <button class="close" id="lightbox-close" aria-label="Schließen">×</button>
+    <img id="lightbox-img" src="" alt="" />
+  </div>
+
+  <!-- ============ ROUTE OVERVIEW ============ -->
+  <div class="routecard">
+    <h2>Die Route</h2>
+    <p class="sub">Loop ab/an Trogir – im Uhrzeigersinn entlang Šolta, Vis, Pakleni & Hvar.</p>
+    <ul class="routelist">
+      <li><span class="dot">0</span><span class="day">Fr 29.5.</span><span class="place">Anreise · Trogir</span><span class="nm">—</span></li>
+      <li><span class="dot">1</span><span class="day">Sa 30.5.</span><span class="place">Trogir → Maslinica (Šolta)</span><span class="nm">~14 NM</span></li>
+      <li><span class="dot">2</span><span class="day">So 31.5.</span><span class="place">Maslinica → Komiža (Vis)</span><span class="nm">~22 NM</span></li>
+      <li><span class="dot">3</span><span class="day">Mo 1.6.</span><span class="place">Komiža → Palmižana</span><span class="nm">~18 NM</span></li>
+      <li><span class="dot">4</span><span class="day">Di 2.6.</span><span class="place">Palmižana → Hvar Town</span><span class="nm">~1 NM</span></li>
+      <li><span class="dot">5</span><span class="day">Mi 3.6.</span><span class="place">Hvar → Vrboska</span><span class="nm">~12 NM</span></li>
+      <li><span class="dot">6</span><span class="day">Do 4.6.</span><span class="place">Vrboska → Split</span><span class="nm">~24 NM</span></li>
+      <li><span class="dot">7</span><span class="day">Fr 5.6.</span><span class="place">Split → Trogir</span><span class="nm">~12 NM</span></li>
+      <li><span class="dot">✓</span><span class="day">Sa 6.6.</span><span class="place">Crew off · Disembark Trogir</span><span class="nm">—</span></li>
+    </ul>
+  </div>
+
+  <!-- ============ MAP ============ -->
+  <div class="mapcard">
+    <h2>Die Karte · Simons Route</h2>
+    <p class="sub">Klick auf einen Marker für Etappendetails. Die Linie zeigt den geplanten Loop.</p>
+    <div id="leafmap" class="leafmap" aria-label="Sailing-Route Karte"></div>
+    <div class="legend">
+      <span class="leg"><span class="ldot a"></span>Anker / Bucht</span>
+      <span class="leg"><span class="ldot m"></span>Marina</span>
+      <span class="leg"><span class="lline"></span>Tagesetappe</span>
+    </div>
+  </div>
+
+  <!-- ============ MONA'S LIST ============ -->
+  <div class="listcard">
+    <div class="meta">📍 Crew-Spotliste · von Mona</div>
+    <h3>Segeln Kroatien · Kochen &amp; Gestalten <span class="badge">30 Spots</span></h3>
+    <p>Mona's gesammelte Restaurants, Buchten &amp; Highlights – jeder kann bearbeiten 🤗 Trag deine Picks ein, sie tauchen in Google Maps direkt für die Crew auf.</p>
+    <a class="btn" href="https://maps.app.goo.gl/hPRRUQLtb3KcgGwb6" target="_blank" rel="noopener">📍 In Google Maps öffnen</a>
+    <div id="monamap" class="monamap" aria-label="Monas 30 Spots Karte"></div>
+    <div class="monahint">📍 Alle 30 Spots als Pins · Klick öffnet Detail-Popup. Für Navigation in Google Maps öffnen.</div>
+  </div>
+
+  <!-- ============ CREW PICKS (Mona & Co.) — ADMIN ONLY ============ -->
+  <div class="planner picks-admin">
+    <h3 style="font-family:'Playfair Display',serif;margin-bottom:6px">🌟 Crew-Picks aus Monas Liste <span class="admin-badge">Admin</span></h3>
+    <p class="small">Nur du siehst diese Box. Spots werden automatisch in den passenden Tag eingeblendet — die Crew sieht sie dort als „Crew Picks"-Block.</p>
+
+    <div class="picks-form">
+      <input id="pick-name" class="span2" placeholder="Spot / Restaurant Name (z.B. Konoba Bako)" />
+      <select id="pick-loc">
+        <option value="">Ort wählen…</option>
+        <option value="trogir">Trogir</option>
+        <option value="maslinica">Maslinica (Šolta)</option>
+        <option value="vis">Vis · Komiža</option>
+        <option value="palmizana">Palmižana (Pakleni)</option>
+        <option value="hvar">Hvar Stadt</option>
+        <option value="vrboska">Vrboska · Stari Grad</option>
+        <option value="split">Split</option>
+      </select>
+      <input id="pick-note" placeholder="Notiz (optional)" />
+      <button id="pick-add">+ Hinzufügen</button>
+      <button type="button" class="bulk-toggle" id="bulk-toggle">📋 Mehrere auf einmal einfügen</button>
+      <div class="bulk-area" id="bulk-area">
+        <textarea id="bulk-text" placeholder="Eine Zeile pro Spot, Format:&#10;Name, ort, optional notiz&#10;&#10;Beispiel:&#10;Pojoda, vis, Hummerspaghetti&#10;Konoba Bako, vis&#10;Eremitaž, vrboska, Romantik-Terrasse"></textarea>
+        <button id="bulk-add" style="grid-column:span 2;margin-top:6px;background:var(--teal);color:#fff;border:none;padding:10px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer">Bulk importieren</button>
+      </div>
+    </div>
+
+    <div id="pick-list" class="picklist"></div>
+  </div>
+
+  <!-- ============ PRE-TRIP ============ -->
+  <div class="section-h"><h2>Vor dem Ablegen</h2><span class="line"></span></div>
+
+  <div class="stay" data-loc="trogir">
+    <div class="when">Do 28. – Sa 30. Mai · Trogir</div>
+    <h3>Trogir Vorprogramm</h3>
+    <div class="who">Hans &amp; Mona: 2 Nächte &nbsp;·&nbsp; André &amp; Jana: 1 Nacht</div>
+
+    <div class="block">
+      <h4><span class="icon">🍝</span> Foodie</h4>
+      <ul>
+        <li><span class="tag">Konoba</span><b>Konoba Trs</b> – winziger Innenhof in der Altstadt, dalmatinische Klassiker auf hohem Niveau, Reservierung Pflicht. <span class="pricing">€€</span></li>
+        <li><span class="tag">Local</span><b>Pizzeria Mirkec</b> – beste Pizza der Stadt, direkt am Wasser zwischen den Booten. <span class="pricing">€</span></li>
+        <li><span class="tag">Fine</span><b>Capo</b> (im Brown Beach House Hotel auf Čiovo) – moderne med. Küche, Pool-Terrasse, Sundowner-Apero. <span class="pricing">€€€</span></li>
+        <li><span class="tag">Bistro</span><b>Bistro Ana</b> – kleine Karte, Tagesfänge, Locals-Treffpunkt abseits der Cathedral-Touristen. <span class="pricing">€€</span></li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h4><span class="icon">📸</span> Insta &amp; Sunset</h4>
+      <ul>
+        <li><b>Glockenturm der Kathedrale Sv. Lovro</b> – steiler Aufstieg, dafür der beste Blick auf rote Dächer + Marina. Golden Hour ab 19:30.</li>
+        <li><b>Kamerlengo Festung</b> – Westmauer für den Sonnenuntergang über dem Kanal.</li>
+        <li><b>Brücke nach Čiovo</b> bei Blue Hour – Fischerboote im Vordergrund, Altstadt-Skyline.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h4><span class="icon">🤫</span> Hidden Gems</h4>
+      <ul>
+        <li><b>Pantan Lagune &amp; Strand</b> – 10 Min mit dem Auto, Süßwasser-Mündung, Flamingos im Frühjahr, kaum Touristen.</li>
+        <li><b>Čiovo · Bucht Okrug Donji</b> – wenn morgens Lust auf Schwimmen vor Abfahrt: Taxi 8 Min, Pinienbucht ohne Trubel.</li>
+        <li><b>Vinarija Šuto</b> (Marina, 20 Min Land) – Family Wine Tasting mit Plavac, Babić &amp; Olivenöl.</li>
+      </ul>
+    </div>
+
+    <div class="note"><b>Tipp:</b> Sa morgens vor Check-in (typisch ab 17 Uhr in SCT Marina) nochmal Crew-Brunch im <i>Konoba Bonaca</i> auf Čiovo – Schinkenplatte, Sardellen, Hauswein 0.2 für 3€.</div>
+  </div>
+
+  <!-- ============ CREW AN BORD ============ -->
+  <div class="section-h"><h2>Crew an Bord</h2><span class="line"></span></div>
+
+  <div class="planner">
+    <div class="who-am-i">
+      <div>👋 Eingeloggt als: <b id="who-name">—</b></div>
+      <button class="logout" id="logout">abmelden</button>
+    </div>
+    <div class="small">Wer ist wann an Bord – und was läuft davor / danach?</div>
+    <div class="crewlist" id="crewlist"></div>
+    <div class="add-crew">
+      <input id="new-crew" placeholder="Name hinzufügen…" />
+      <button id="add-crew-btn">+ Crew</button>
+    </div>
+    <p class="small" style="margin-top:10px">💡 Lokal gespeichert pro Gerät – sobald wir das Backend angeschlossen haben (Google Sheet Webhook geplant), syncen sich Einträge crew-weit.</p>
+  </div>
+
+  <!-- ============ DAY CARDS ============ -->
+  <div class="section-h"><h2>Tag für Tag</h2><span class="line"></span></div>
+
+  <!-- DAY 1 -->
+  <details class="day" open data-loc="maslinica">
+    <summary>
+      <header>
+        <div class="num">1</div>
+        <div class="titles">
+          <div class="when">Sa · 30. Mai</div>
+          <h3>Trogir → Maslinica (Šolta)</h3>
+          <div class="leg">Sanfter Auftakt, kurze Etappe nach West-Šolta</div>
+        </div>
+        <div class="caret">▾</div>
+      </header>
+    </summary>
+    <div class="body">
+      <div class="stats">
+        <div class="stat"><div class="k">Distanz</div><div class="v">~14 NM</div></div>
+        <div class="stat"><div class="k">Segelzeit</div><div class="v">~3 h</div></div>
+        <div class="stat"><div class="k">Liegeplatz</div><div class="v">Marina</div></div>
+      </div>
+      <p><b>Plan:</b> Check-in &amp; Boots-Briefing in SCT Marina Trogir am späten Nachmittag, Provianteinkauf bei <i>Tommy</i> oder <i>Studenac</i> direkt nebenan. Ablegen meist Sa-Morgen oder zum frühen Nachmittag – Westkurs durch den Drvenik-Kanal nach Maslinica an der Westspitze von Šolta. Liegeplatz im Hafen direkt vor dem <i>Schloss Martinis Marchi</i> oder Anker in der <i>Šešula-Bucht</i> (1 Bucht weiter südlich, mooring lines).</p>
+
+      <div class="block">
+        <h4><span class="icon">🍷</span> Foodie</h4>
+        <ul>
+          <li><span class="tag">Signature</span><b>Restaurant Martinis Marchi</b> – im 18. Jh. Schloss, Tasting-Menü, weiß gedeckte Terrasse mit Blick auf die 7 Inselchen. Reservieren! <span class="pricing">€€€</span></li>
+          <li><span class="tag">Bucht</span><b>Konoba Šešula</b> – legendäre Anker-Konoba in der Nachbarbucht, <i>Peka unter Glocke</i> 4 h vorher per Funk vorbestellen (Lamm oder Oktopus). <span class="pricing">€€</span></li>
+          <li><span class="tag">Easy</span><b>Konoba Anđa</b> – kleine Plätze direkt am Hafen, Tintenfischsalat &amp; gegrillte Dorade. <span class="pricing">€€</span></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">📸</span> Insta &amp; Sunset</h4>
+        <ul>
+          <li><b>Gradina Hill</b> über Maslinica – 20 Min Aufstieg, Drohnen-Panorama auf das Inselarchipel, Sonnenuntergang ohne Hektik.</li>
+          <li><b>Schloss-Tor mit Marina</b> – die ikonische Kompositionsachse durch den Torbogen.</li>
+          <li><b>Šešula-Bucht von oben</b> (Wanderweg vom Hafen, ~25 Min) – türkises Wasser, Ankerlieger.</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">🤫</span> Hidden Gems</h4>
+        <ul>
+          <li><b>Drvenik Veli – Blaue Lagune (Krknjaši)</b> – auf dem Weg ggf. Stopp zum Schwimmen, Sandboden, knietief türkis.</li>
+          <li><b>Stomorska</b> auf der anderen Šolta-Seite – winziger Fischerort, falls man am So. einen Mini-Hop einlegt.</li>
+          <li><b>Olivenölverkostung Olynthia</b> in Donje Selo – Šolta-Öl ist UNESCO Welterbe-Kandidat, Familienbetrieb mit Voranmeldung.</li>
+        </ul>
+      </div>
+      <div class="note"><b>Sundowner:</b> Apero an Deck mit Blick auf die untergehende Sonne hinter den Inselchen – die wohl ruhigste Nacht der ganzen Reise.</div>
+    </div>
+  </details>
+
+  <!-- DAY 2 -->
+  <details class="day" data-loc="vis">
+    <summary>
+      <header>
+        <div class="num">2</div>
+        <div class="titles">
+          <div class="when">So · 31. Mai</div>
+          <h3>Maslinica → Komiža (Vis)</h3>
+          <div class="leg">Längste offene Etappe – ab nach Vis</div>
+        </div>
+        <div class="caret">▾</div>
+      </header>
+    </summary>
+    <div class="body">
+      <div class="stats">
+        <div class="stat"><div class="k">Distanz</div><div class="v">~22 NM</div></div>
+        <div class="stat"><div class="k">Segelzeit</div><div class="v">~4–5 h</div></div>
+        <div class="stat"><div class="k">Liegeplatz</div><div class="v">Stadthafen</div></div>
+      </div>
+      <p><b>Plan:</b> Früh ablegen, Südwest-Kurs offene See nach Vis. Bei gutem Wetter Stopp in der <i>Stiniva-Bucht</i> (UNESCO-würdig, schmale Felsschlucht öffnet sich zum Pebble-Strand) zum Mittag-Schwimmen, danach um die Südspitze nach Komiža. Liegeplatz im Stadthafen mit Tauen/Anker, sehr kompakt – früh ankommen lohnt.</p>
+
+      <div class="block">
+        <h4><span class="icon">🍝</span> Foodie</h4>
+        <ul>
+          <li><span class="tag">Must</span><b>Pojoda</b> – das gastronomische Herz von Vis. Hummerspaghetti, gebackene Komiška Pogača, dazu lokale <i>Vugava</i>. Reservierung essentiell. <span class="pricing">€€€</span></li>
+          <li><span class="tag">Hafen</span><b>Konoba Bako</b> – Wein- &amp; Amphorenkeller im Speiseraum, Fisch nach Gewicht, romantisch direkt am Wasser. <span class="pricing">€€</span></li>
+          <li><span class="tag">Klassiker</span><b>Jastožera Komiža</b> – ehemalige Hummerfangstation, Tische auf Holzplanken über dem Meer, Hummer-Brodet-Spaghetti. <span class="pricing">€€€</span></li>
+          <li><span class="tag">Local</span><b>Konoba Barba</b> – winzig, kreidetafelmenü, perfekt für Abendessen ohne Tourist-Trap-Vibe. <span class="pricing">€€</span></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">📸</span> Insta &amp; Sunset</h4>
+        <ul>
+          <li><b>Stiniva</b> – Drohnenbild der Schlucht von oben + Schwimmer-Perspektive aus dem Wasser. Sonnenlicht steht 11–14 Uhr senkrecht.</li>
+          <li><b>Komiža Riva am Abend</b> – pastellfarbene Fassaden + Fischerboote, Spiegelung in der Bucht.</li>
+          <li><b>Hum-Gipfel (Biševo/Vis)</b> – Sonnenuntergang über offenem Meer, Italien-Blick bei klarer Sicht.</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">🤫</span> Hidden Gems</h4>
+        <ul>
+          <li><b>Modra Špilja (Blaue Grotte) auf Biševo</b> – Tender oder Wassertaxi, Eintritt ~10€, Licht-Window 11–13 Uhr. Geheimtipp: <b>Zelena Špilja (Grüne Grotte)</b> auf Ravnik – durchschwimmbar &amp; meist leer.</li>
+          <li><b>Tito&apos;s Cave &amp; Vis Military Tour</b> – Vis war bis 1989 militärisches Sperrgebiet, Jeep-Tour zu U-Boot-Tunneln &amp; verlassenen Bunkern. Surreal.</li>
+          <li><b>Lipanović Wine Cellar</b> – Verkostung im ehem. Militärtunnel, Vugava + Plavac mali, ohne Voranmeldung schwer reinzukommen.</li>
+          <li><b>Srebrna (Silver Bay)</b> auf der Süd-Vis-Route – heller Kies, glasklar, Anker drin.</li>
+        </ul>
+      </div>
+      <div class="note"><b>Insider-Tipp:</b> auf Vis Vugava als Wein bestellen, nicht Pošip – 100% Vis-Sorte, 90% der Touris kennen sie nicht.</div>
+    </div>
+  </details>
+
+  <!-- DAY 3 -->
+  <details class="day" data-loc="palmizana">
+    <summary>
+      <header>
+        <div class="num">3</div>
+        <div class="titles">
+          <div class="when">Mo · 1. Juni</div>
+          <h3>Komiža → Palmižana (Pakleni)</h3>
+          <div class="leg">Bohemian Marina im Inselarchipel</div>
+        </div>
+        <div class="caret">▾</div>
+      </header>
+    </summary>
+    <div class="body">
+      <div class="stats">
+        <div class="stat"><div class="k">Distanz</div><div class="v">~18 NM</div></div>
+        <div class="stat"><div class="k">Segelzeit</div><div class="v">~3.5 h</div></div>
+        <div class="stat"><div class="k">Liegeplatz</div><div class="v">ACI Marina</div></div>
+      </div>
+      <p><b>Plan:</b> Nordost-Kurs zu den Pakleni-Inseln vor Hvar. Optional Lunch-Stopp in der <i>Stončica-Bucht</i> (Sandboden!) auf Vis-Nordseite oder direkt durchsegeln. ACI Marina Palmižana auf Sveti Klement – das Meneghello-Familien-Resort prägt die ganze Insel: botanischer Garten, Skulpturen, vier kultige Restaurants in Gehweite.</p>
+
+      <div class="block">
+        <h4><span class="icon">🍷</span> Foodie</h4>
+        <ul>
+          <li><span class="tag">Icon</span><b>Toto&apos;s</b> – seit den 80ern, Hippie-Chic-Ambiente unter Pinien, riesige Portionen, Riesling-Stimmung. <span class="pricing">€€€</span></li>
+          <li><span class="tag">Vibe</span><b>Laganini Lounge</b> – Sushi, Sashimi, frischer Fisch, Daybeds, House-DJ ab Sonnenuntergang. Auch Bootstaxi-Service vom Anker. <span class="pricing">€€€</span></li>
+          <li><span class="tag">Romantik</span><b>Meneghello Restaurant Zori</b> in Vinogradišće – im Garten, Tasting-Menüs, persönlich von der Familie geführt. <span class="pricing">€€€</span></li>
+          <li><span class="tag">Easy</span><b>Konoba Dionis</b> – etwas außerhalb, einfacher, Peka auf Vorbestellung. <span class="pricing">€€</span></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">📸</span> Insta &amp; Sunset</h4>
+        <ul>
+          <li><b>Vinogradišće Bay</b> – türkise Lagune mit weißen Sonnenliegen, klassisches Pakleni-Postcard-Shot.</li>
+          <li><b>Skulpturengarten</b> entlang des Wegs zum Restaurant – Kunst zwischen Agaven.</li>
+          <li><b>Sunset von Sveti Jerolim</b> – Nachbarinsel, Tender-Ride, leerer Felsen mit Hvar-Skyline im Rückenlicht.</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">🤫</span> Hidden Gems</h4>
+        <ul>
+          <li><b>Ankerbucht Ždrilca / Mlini</b> – zwischen den Pakleni-Inseln, beste Schnorchelspots, glasklar.</li>
+          <li><b>Gornje Selo Olive Mill</b> auf Klement – kleine Mühle, alte Pressanlagen, Gespräch mit den Meneghellos.</li>
+          <li><b>Stipanska-Bucht</b> mit Carpe Diem Stipanska Beach Club – tagsüber chillig, abends DJ-Vibe ab Hvar.</li>
+        </ul>
+      </div>
+      <div class="note"><b>Reservieren:</b> Toto&apos;s &amp; Laganini im Juni Pflicht – am besten gleich Mo morgens per WhatsApp anpingen.</div>
+    </div>
+  </details>
+
+  <!-- DAY 4 -->
+  <details class="day" data-loc="hvar">
+    <summary>
+      <header>
+        <div class="num">4</div>
+        <div class="titles">
+          <div class="when">Di · 2. Juni</div>
+          <h3>Palmižana → Hvar Stadt</h3>
+          <div class="leg">Mini-Hop über den Kanal in die It-City</div>
+        </div>
+        <div class="caret">▾</div>
+      </header>
+    </summary>
+    <div class="body">
+      <div class="stats">
+        <div class="stat"><div class="k">Distanz</div><div class="v">~1 NM</div></div>
+        <div class="stat"><div class="k">Segelzeit</div><div class="v">~20 min</div></div>
+        <div class="stat"><div class="k">Liegeplatz</div><div class="v">Riva / Anker</div></div>
+      </div>
+      <p><b>Plan:</b> Eigentlich nur ein Sprung – also Vormittag Pakleni auskosten, gegen Mittag rüber, an der Hvar Riva festmachen (teuer, ~150–250€/Nacht im Juni) oder vor Hvar ankern + Tender. Nachmittag &amp; Abend in der Stadt.</p>
+
+      <div class="block">
+        <h4><span class="icon">🍝</span> Foodie</h4>
+        <ul>
+          <li><span class="tag">See &amp; Be Seen</span><b>Gariful</b> – Yachtie-Klassiker direkt am Wasser, Hummer + Tartufo, Promi-Gästebuch. <span class="pricing">€€€€</span></li>
+          <li><span class="tag">Local Love</span><b>Dalmatino</b> – Locals' Favourite, immer voll, Steaks &amp; Seafood, charmanter Service. <span class="pricing">€€€</span></li>
+          <li><span class="tag">Konoba</span><b>Konoba Menego</b> – traditionelle Tapas (paški sir, sardele, anchovies), Holztische, ehrliche Karte. <span class="pricing">€€</span></li>
+          <li><span class="tag">Trend</span><b>Black Pepper Hvar</b> – moderne Med, Trüffelpasta, schöne Gasse. <span class="pricing">€€€</span></li>
+          <li><span class="tag">Drinks &amp; Bites</span><b>Lola Bistro</b> – Cocktail-Tapas-Spot in der Altstadt, perfekt für Late-Night-Bissen. <span class="pricing">€€</span></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">📸</span> Insta &amp; Sunset</h4>
+        <ul>
+          <li><b>Spanish Fortress (Fortica)</b> – ~15 Min Aufstieg, der Hvar-Sunset-Shot über Pakleni. <i>Pflichttermin.</i></li>
+          <li><b>Hula Hula Beach Bar</b> – ikonischer Sundowner mit Live-DJ und Champagner-Sprays, am Klippenpfad.</li>
+          <li><b>Falko Beach Bar</b> – 20 Min zu Fuß weiter, deutlich entspannter, hippie-bohemian, Pinien.</li>
+          <li><b>Pjaca Sv. Stjepana</b> bei Blue Hour – größter Renaissance-Platz Dalmatiens, Marmor spiegelt.</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">🌃</span> Nightlife (optional)</h4>
+        <ul>
+          <li><b>Carpe Diem</b> (Stadt) für Aperitivo, danach Bootstransfer zum <b>Carpe Diem Beach</b> auf Stipanska – Late-Night Club bis 5 Uhr.</li>
+          <li><b>Pink Champagne</b> &amp; <b>Kiva Bar</b> – kleine Altstadtgassen, schweißig, fun.</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">🤫</span> Hidden Gems</h4>
+        <ul>
+          <li><b>Lavendelfelder Velo Grablje</b> – im Juni in voller Blüte, 25 Min Taxi ins Hinterland, verlassenes Lavendel-Dorf.</li>
+          <li><b>Hvar Hills Winery</b> in Velo Grablje – Mikro-Winzer, Pošip + Plavac auf der Terrasse mit Inselblick.</li>
+          <li><b>Pokonji Dol</b> Kiesbucht 20 Min östlich – ruhiger als alles in der Stadt.</li>
+        </ul>
+      </div>
+      <div class="note"><b>Tipp:</b> Reservierungen ab heute alle bestätigen – Hvar-Top-Adressen sind im Juni mit 3–5 Tagen Vorlauf praktisch immer voll.</div>
+    </div>
+  </details>
+
+  <!-- DAY 5 -->
+  <details class="day" data-loc="vrboska">
+    <summary>
+      <header>
+        <div class="num">5</div>
+        <div class="titles">
+          <div class="when">Mi · 3. Juni</div>
+          <h3>Hvar → Vrboska</h3>
+          <div class="leg">"Klein-Venedig" der Insel Hvar</div>
+        </div>
+        <div class="caret">▾</div>
+      </header>
+    </summary>
+    <div class="body">
+      <div class="stats">
+        <div class="stat"><div class="k">Distanz</div><div class="v">~12 NM</div></div>
+        <div class="stat"><div class="k">Segelzeit</div><div class="v">~2.5 h</div></div>
+        <div class="stat"><div class="k">Liegeplatz</div><div class="v">ACI / Quay</div></div>
+      </div>
+      <p><b>Plan:</b> Um die Westspitze von Hvar an der Nordseite entlang nach Vrboska – das ruhigste, hübscheste Dorf der Insel, mit kleiner Brücke, Kanal und der wuchtigen Wehrkirche Sv. Marija. Liegeplatz in der ACI Marina Vrboska oder Town-Quay. Stari Grad &amp; Jelsa easy zu erreichen für Abendessen-Abstecher.</p>
+
+      <div class="block">
+        <h4><span class="icon">🍝</span> Foodie</h4>
+        <ul>
+          <li><span class="tag">Vrboska</span><b>Konoba Vrboska</b> – kleine Karte, gute Pasta &amp; Risotto, am Wasser. <span class="pricing">€€</span></li>
+          <li><span class="tag">Stari Grad</span><b>Eremitaž</b> – Ex-Quarantänestation, romantischste Terrasse Dalmatiens, modern reinterpretierte Klassiker. Reservierung Pflicht. <span class="pricing">€€€</span></li>
+          <li><span class="tag">Stari Grad</span><b>Konoba Pinjata</b> – ehrlich, Locals, Peka &amp; Brodet auf Vorbestellung. <span class="pricing">€€</span></li>
+          <li><span class="tag">Detour</span><b>Stori Komin</b> in Dol – Dorftaverne im Hinterland, Kamin-Peka, Käse vom Bauern. Lohnt das Taxi. <span class="pricing">€€</span></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">📸</span> Insta &amp; Sunset</h4>
+        <ul>
+          <li><b>Vrboska-Kanal mit Brücke</b> – die "kleine Venedig"-Aufnahme bei Golden Hour, vom Aussichtsfelsen oberhalb des Hafens.</li>
+          <li><b>Stari Grad Plain</b> – UNESCO-Welterbe, antike griechische Parzellierung, Olivenhaine. Drohnen-Material par excellence.</li>
+          <li><b>Sv. Marija Wehrkirche</b> innen – Steingewölbe, dramatisches Licht.</li>
+          <li><b>Sunset von Glavica-Hügel</b> über Vrboska.</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">🤫</span> Hidden Gems</h4>
+        <ul>
+          <li><b>Tomić Winery (Bastijana)</b> in Jelsa – Hvar-Star-Winzer, römisch inspirierter Tasting-Saal, Pošip &amp; Prošek-Dessertwein.</li>
+          <li><b>Maslinica-Bucht (auf Hvar!)</b> – Pinienwald-Bucht 10 Min östlich von Vrboska, FKK-tolerant, sehr ruhig.</li>
+          <li><b>Velo Grablje &amp; Malo Grablje</b> – verlassene Lavendel-Geisterdörfer im Inselinneren.</li>
+          <li><b>Jelsa Riva am Abend</b> – Dorfplatz mit Locals-Korzo, ohne Hvar-Trubel.</li>
+        </ul>
+      </div>
+      <div class="note"><b>Wenn Crew Lust hat:</b> Stari Grad ist 5 Min Taxi von Vrboska – charmanteste Stadt der Insel, deutlich entspannter als Hvar Town.</div>
+    </div>
+  </details>
+
+  <!-- DAY 6 -->
+  <details class="day" data-loc="split">
+    <summary>
+      <header>
+        <div class="num">6</div>
+        <div class="titles">
+          <div class="when">Do · 4. Juni</div>
+          <h3>Vrboska → Split</h3>
+          <div class="leg">Zurück aufs Festland – Diocletian's City</div>
+        </div>
+        <div class="caret">▾</div>
+      </header>
+    </summary>
+    <div class="body">
+      <div class="stats">
+        <div class="stat"><div class="k">Distanz</div><div class="v">~24 NM</div></div>
+        <div class="stat"><div class="k">Segelzeit</div><div class="v">~4.5 h</div></div>
+        <div class="stat"><div class="k">Liegeplatz</div><div class="v">ACI Marina Split</div></div>
+      </div>
+      <p><b>Plan:</b> Nordkurs Richtung Brač-Kanal, optional Mittagsstopp <i>Bol / Zlatni Rat</i> auf Brač (das berühmteste Strand-Bild Kroatiens, sich verschiebende Sand-Spitze). Weiter in die ACI Marina Split – fußläufig in den Diocletian-Palast.</p>
+
+      <div class="block">
+        <h4><span class="icon">🍝</span> Foodie</h4>
+        <ul>
+          <li><span class="tag">Trend</span><b>Bokeria Kitchen &amp; Wine</b> – ehemalige Markthalle, Industrial-Chic, perfekt für die ganze Crew. <span class="pricing">€€€</span></li>
+          <li><span class="tag">Wine Bar</span><b>Zinfandel Food &amp; Wine Bar</b> – kleine Tapas-Karte, große kroatische Weinkarte. <span class="pricing">€€€</span></li>
+          <li><span class="tag">Local</span><b>Villa Spiza</b> – kein Menü, Tagesfänge an der Tafel, 12 Sitze, Anstehen Pflicht. Kult. <span class="pricing">€€</span></li>
+          <li><span class="tag">Riva-View</span><b>Bajamonti</b> – Belle-Époque-Saal, klassisch dalmatinisch elegant. <span class="pricing">€€€</span></li>
+          <li><span class="tag">Pizza</span><b>Bokamorra Pizzaurant</b> – Neapolitanisch, beste Pizza Splits. <span class="pricing">€€</span></li>
+          <li><span class="tag">Konoba</span><b>Konoba Matejuška</b> – Fischer-Quartier, gegrillter Fisch, kleine Innengasse. <span class="pricing">€€</span></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">📸</span> Insta &amp; Sunset</h4>
+        <ul>
+          <li><b>Glockenturm Sv. Duje</b> – steiler Aufstieg im Diokletian-Palast, der beste 360° Blick auf rote Dächer + Adria.</li>
+          <li><b>Marjan-Stairway &amp; Vidilica-Café</b> – Sunset-Punkt mit Aperol über Split, danach <i>Kašjuni Beach</i>.</li>
+          <li><b>Peristyle bei Blue Hour</b> – die Säulenhalle leuchtet rotorange durch die Untergrundlichter.</li>
+          <li><b>Riva Promenade</b> – Palmen, weißer Stein, Sundowner.</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">🤫</span> Hidden Gems</h4>
+        <ul>
+          <li><b>Mazzgoon</b> – versteckte Innenhof-Trattoria, mediterran modern, im Sommer immer voll.</li>
+          <li><b>Galerija Kantun Paulina</b> – Kult-Imbiss für ćevapčići mit der Hand vom Tresen.</li>
+          <li><b>D16 Coffee</b> – beste Specialty-Coffee Splits, in einem Säulengewölbe des Palasts.</li>
+          <li><b>Jaman Art Gallery</b> – kleine kroatische zeitgenössische Kunst, oft mit Künstler:innen vor Ort.</li>
+          <li><b>Bačvice-Strand am Abend</b> – Picigin spielen mit den Locals (Splits Erfindung), barfuß, gratis Spektakel.</li>
+        </ul>
+      </div>
+      <div class="note"><b>Crew-Tipp:</b> letzter Bord-Abend kommt – Captain&apos;s Dinner an Bord oder gemeinsam in <b>Bokeria</b> (Gruppentisch).</div>
+    </div>
+  </details>
+
+  <!-- DAY 7 -->
+  <details class="day" data-loc="trogir">
+    <summary>
+      <header>
+        <div class="num">7</div>
+        <div class="titles">
+          <div class="when">Fr · 5. Juni</div>
+          <h3>Split → Trogir</h3>
+          <div class="leg">Letzte Etappe, kurzer Hop, finaler Apero</div>
+        </div>
+        <div class="caret">▾</div>
+      </header>
+    </summary>
+    <div class="body">
+      <div class="stats">
+        <div class="stat"><div class="k">Distanz</div><div class="v">~12 NM</div></div>
+        <div class="stat"><div class="k">Segelzeit</div><div class="v">~2.5 h</div></div>
+        <div class="stat"><div class="k">Liegeplatz</div><div class="v">SCT Trogir</div></div>
+      </div>
+      <p><b>Plan:</b> Späte Abfahrt, evtl. Mittags-Schwimmstopp in der <i>Stomorska-Bucht</i> oder vor <i>Slatine</i> (Čiovo). Rückkehr in die SCT Marina Trogir – Boot abtanken, Müll, Last-Night-Dinner an Land.</p>
+
+      <div class="block">
+        <h4><span class="icon">🍝</span> Foodie · Last Night Trogir</h4>
+        <ul>
+          <li><span class="tag">Highlight</span><b>Restaurant Foša</b> in Trogir – Yacht-Crowd, frischer Fisch, romantisch im Park unter Pinien. <span class="pricing">€€€</span></li>
+          <li><span class="tag">Bistro</span><b>Don Dino</b> – vergeben sehr beliebt, Pasta &amp; Steaks, kleine Plätze in der Altstadtgasse. <span class="pricing">€€</span></li>
+          <li><span class="tag">Konoba</span><b>Konoba Trs</b> – siehe Vorprogramm. Wer&apos;s mochte: nochmal. <span class="pricing">€€</span></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4><span class="icon">📸</span> Letzte Sunsets</h4>
+        <ul>
+          <li><b>Marina Pier nach Sonnenuntergang</b> – beleuchtete Yachten, Crew-Gruppenfoto.</li>
+          <li><b>Trogir Riva</b> – nochmal Glockenturm + Cocktail unter Palmen.</li>
+        </ul>
+      </div>
+      <div class="note"><b>Bord-Logistik:</b> Spätestens 18 Uhr Boot tanken, 19 Uhr letzter Müll-Run, dann gemeinsam an Land essen.</div>
+    </div>
+  </details>
+
+  <!-- ============ POST-TRIP SPLIT ============ -->
+  <div class="section-h"><h2>Nach dem Anlegen</h2><span class="line"></span></div>
+
+  <div class="stay" data-loc="split">
+    <div class="when">Sa 6. – Mo 8. Juni · Split</div>
+    <h3>Split Anschluss <span class="pill coral">André &amp; Jana</span></h3>
+    <div class="who">2 Nächte zusätzlich – richtig in die Stadt eintauchen.</div>
+
+    <div class="block">
+      <h4><span class="icon">🏛️</span> Must-Do</h4>
+      <ul>
+        <li><b>Diokletianpalast Vault &amp; Substruktionen</b> – früh morgens vor 9 Uhr, leer und magisch.</li>
+        <li><b>Marjan-Halbinsel-Wanderung</b> über Sv. Jere → Telegrin Peak → Kašjuni-Strand. ~2.5 h, mit Bademantel-Reward.</li>
+        <li><b>Daytrip Brač / Šolta / Trogir</b> – falls noch nicht satt von Inseln.</li>
+        <li><b>Klapa-Konzert</b> im Vestibul des Palasts (Klapa-Sänger geben sonntags abends spontan Mini-Konzerte – pure Gänsehaut).</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h4><span class="icon">🍷</span> Foodie · Slow Mode</h4>
+      <ul>
+        <li><b>Apetit</b> – Terrasse in Säulengasse, Carpaccios &amp; Pasta, gehobene Stimmung. <span class="pricing">€€€</span></li>
+        <li><b>Brasserie on 7</b> – Riva-Frühstück mit Eggs Benedict + Espresso, beste Lage der Stadt. <span class="pricing">€€</span></li>
+        <li><b>Dvor</b> – etwas außerhalb (Richtung Bačvice), Steingarten am Wasser, Date-Mode. <span class="pricing">€€€</span></li>
+        <li><b>Uje Oil Bar</b> – Olive-Oil-Tasting + dalmatinische Tapas, kompakte Karte, top Weine. <span class="pricing">€€</span></li>
+        <li><b>Kavana Bobis</b> – ältestes Caféhaus, Cremeschnitte „Kremšnita" zum Frühstück. <span class="pricing">€</span></li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h4><span class="icon">📸</span> Insta-Worthy</h4>
+      <ul>
+        <li><b>Vidilica Café</b> auf Marjan – Aperol mit Postkartenblick, früh hin (Plätze).</li>
+        <li><b>Riva-Palmen bei Blue Hour</b> – Frontal vom Wasser per Drohne oder vom Pier-Ende.</li>
+        <li><b>Telegrin Cross</b> auf Marjan-Spitze – Adria + Inselsilhouetten.</li>
+        <li><b>Kašjuni Beach</b> bei Sonnenuntergang.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h4><span class="icon">🤫</span> Hidden &amp; Local</h4>
+      <ul>
+        <li><b>Pazar (Open-Air-Markt) am Vormittag</b> – Bauernkäse, Brust-Tomaten, Erdbeeren. Frühstück on the go.</li>
+        <li><b>Get Wet Stand-up Paddle</b> ab Bene-Bucht (Marjan) – Sonnenaufgang-Tour entlang Cliff-Beaches.</li>
+        <li><b>Diocletian's Cellar Comedy</b> oder Klapa-Spontankonzerte abends im Vestibul.</li>
+        <li><b>Hidden Cocktail Bar:</b> <b>Marvlvs Library Jazz Bar</b> – Bücherregale, Negroni, kein Schild draußen.</li>
+      </ul>
+    </div>
+    <div class="note"><b>Hotel-Picks Split:</b> <b>Heritage Antique Split</b> (boutique, im Palast), <b>Hotel Park</b> (klassisch, Pool, 10 Min vom Centrum), <b>Cornaro</b> (Rooftop-Bar mit Stadtblick).</div>
+  </div>
+
+  <!-- ============ FOOD & DRINKS ============ -->
+  <div class="section-h"><h2>Food &amp; Drinks an Bord</h2><span class="line"></span></div>
+
+  <div class="planner">
+    <div class="tabs" role="tablist">
+      <button class="on" data-tab="plan">📅 Plan</button>
+      <button data-tab="shop">🛒 Einkauf</button>
+      <button data-tab="ideas">💡 Ideen</button>
+    </div>
+
+    <!-- TAB 1: Restaurant-Plan -->
+    <div class="tabpane on" data-pane="plan">
+      <p class="small">Wer kocht, wer reserviert, was läuft pro Tag. Eintippen &amp; speichern (lokal).</p>
+      <div class="foodboard" id="foodboard">
+        <div class="foodrow"><div class="d">Sa 30.5</div><input data-key="food-sat" placeholder="Crew-Brunch / Welcome-Dinner an Bord…"></div>
+        <div class="foodrow"><div class="d">So 31.5</div><input data-key="food-sun" placeholder="Frühstück / Lunch unterwegs / Pojoda Vis"></div>
+        <div class="foodrow"><div class="d">Mo 1.6</div><input data-key="food-mon" placeholder="An Bord BBQ / Toto's Palmižana"></div>
+        <div class="foodrow"><div class="d">Di 2.6</div><input data-key="food-tue" placeholder="Hvar – Dalmatino / Gariful?"></div>
+        <div class="foodrow"><div class="d">Mi 3.6</div><input data-key="food-wed" placeholder="Eremitaž Stari Grad / Konoba Vrboska"></div>
+        <div class="foodrow"><div class="d">Do 4.6</div><input data-key="food-thu" placeholder="Captain's Dinner Split – Bokeria?"></div>
+        <div class="foodrow"><div class="d">Fr 5.6</div><input data-key="food-fri" placeholder="Last Night Trogir – Foša?"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Einkaufsliste -->
+    <div class="tabpane" data-pane="shop">
+      <p class="small">Was muss noch an Bord? Hak es ab beim Einkaufen. Crew-Mitglieder können beliebig ergänzen.</p>
+
+      <div class="shop">
+        <div class="shop-cats" id="shop-cats">
+          <button class="shop-cat on" data-cat="all">Alle</button>
+          <button class="shop-cat" data-cat="gemuse">Obst &amp; Gemüse</button>
+          <button class="shop-cat" data-cat="brot">Brot &amp; Teig</button>
+          <button class="shop-cat" data-cat="fleisch">Fleisch &amp; Fisch</button>
+          <button class="shop-cat" data-cat="dairy">Milch &amp; Käse</button>
+          <button class="shop-cat" data-cat="snacks">Snacks</button>
+          <button class="shop-cat" data-cat="getranke">Getränke</button>
+          <button class="shop-cat" data-cat="sonstiges">Sonstiges</button>
+        </div>
+
+        <div class="shop-add">
+          <input id="shop-name" placeholder="Was? (z.B. Tomaten)" />
+          <input id="shop-qty" placeholder="Menge" />
+          <select id="shop-cat">
+            <option value="gemuse">Obst &amp; Gemüse</option>
+            <option value="brot">Brot &amp; Teig</option>
+            <option value="fleisch">Fleisch &amp; Fisch</option>
+            <option value="dairy">Milch &amp; Käse</option>
+            <option value="snacks">Snacks</option>
+            <option value="getranke">Getränke</option>
+            <option value="sonstiges">Sonstiges</option>
+          </select>
+          <button id="shop-add">+</button>
+        </div>
+
+        <div class="shop-list" id="shop-list"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Food-Ideen -->
+    <div class="tabpane" data-pane="ideas">
+      <p class="small">Brainstorm-Box: Was wollen wir an Bord essen &amp; trinken? Spaghetti Vongole am 2. Abend? Aperol auf Anker? Wirf rein.</p>
+
+      <div class="ideas-add">
+        <input id="idea-text" placeholder="Deine Idee… (z.B. Cacio e Pepe als Anker-Lunch)" />
+        <button id="idea-add">+ Idee</button>
+      </div>
+
+      <div class="ideas-list" id="ideas-list"></div>
+    </div>
+  </div>
+
+  <!-- ============ ABSTIMMUNG ============ -->
+  <div class="section-h"><h2>Crew Abstimmung</h2><span class="line"></span></div>
+
+  <div class="planner">
+    <div class="small">Tipp &amp; entscheid mit – Stimmen werden lokal getrackt (Demo). Echtes Crew-Voting kommt mit dem Backend nach.</div>
+
+    <div id="votes"></div>
+  </div>
+
+  <footer>
+    Made with <span class="heart">♥</span> für die Crew · v1 · 30.05–06.06.2026<br/>
+    <span style="opacity:.6">Last update: 10.05.2026</span>
+  </footer>
+</div>
+
+<script>
+  /* ============ LOGIN ============ */
+  const PW = 'sailingcroatia';
+  const lock = document.getElementById('lock');
+  const nameI = document.getElementById('login-name');
+  const pwI   = document.getElementById('login-pw');
+  const errEl = document.getElementById('login-err');
+  const goBtn = document.getElementById('login-go');
+
+  function tryLogin(){
+    const n = nameI.value.trim();
+    const p = pwI.value.trim().toLowerCase().replace(/\s+/g,'');
+    if(!n){ errEl.textContent = 'Bitte Name eingeben'; return; }
+    if(p !== PW){ errEl.textContent = 'Passwort falsch — versuch nochmal'; return; }
+    localStorage.setItem('crewName', n);
+    errEl.textContent = '';
+    unlock();
+  }
+  goBtn.addEventListener('click', tryLogin);
+  [nameI, pwI].forEach(i => i.addEventListener('keydown', e => { if(e.key === 'Enter') tryLogin(); }));
+
+  function unlock(){
+    lock.classList.add('hidden');
+    const me = localStorage.getItem('crewName') || '';
+    document.getElementById('who-name').textContent = me || '—';
+    seedMeIntoCrew(me);
+    applyAdminVisibility();
+    renderCrew();
+    renderVotes();
+    renderPicks();
+    renderShop();
+    renderIdeas();
+  }
+
+  // NOTE: auto-unlock moved to end of script to avoid TDZ on const definitions
+
+  document.getElementById('logout').addEventListener('click', () => {
+    localStorage.removeItem('crewName');
+    location.reload();
+  });
+
+  /* ============ CREW LIST ============ */
+  const DEFAULT_CREW = [
+    {name:'Simon',  nick:'Käpt\'n Sim',     role:'🧭 Captain',                task:'Plan, Knoten, Manöver – der mit dem Wetter im Kopf'},
+    {name:'André',  nick:'Sommelier-Dré',   role:'🍷 Aperol-Beauftragter',     task:'Drink-Karte, Sundowner-Timing, Spotify-Co-Pilot'},
+    {name:'Jana',   nick:'Sunny Jane',      role:'☀️ Sun-Manager',             task:'Sonnencreme-Polizei + Buchten-Scout'},
+    {name:'Mona',   nick:'Chefin Mo',       role:'🍽️ Chef de Cuisine',         task:'Restaurant-Scout, Reservierungs-Queen'},
+    {name:'Hans',   nick:'Anker-Hans',      role:'⚓ Bootsmann',                task:'Anker, Fender, Leinen – der mit dem Knoten-Wissen'},
+    {name:'Alessa', nick:'DJ Less',         role:'🎶 DJ an Bord',              task:'Spotify-Boss, Sundowner-Soundtrack'},
+    {name:'Luzy',   nick:'Insta-Lu',        role:'📸 Foto-Beauftragte',        task:'Drohnen-Shots, Crew-Reels, Reise-Doku'}
+  ];
+
+  function getCrew(){
+    const stored = localStorage.getItem('crew-list');
+    if(stored){
+      try {
+        const arr = JSON.parse(stored);
+        return arr.map(p => ({nick:'', role:'', task:'', from:'', to:'', plan:'', ...p}));
+      } catch(e){}
+    }
+    return DEFAULT_CREW.map(p => ({...p, from:'2026-05-30', to:'2026-06-06', plan:''}));
+  }
+
+  // One-time migration: seed nick/role/task for existing crew matching DEFAULT_CREW
+  if(!localStorage.getItem('roles-seeded-v1')){
+    const c = getCrew();
+    let changed = false;
+    c.forEach(p => {
+      const def = DEFAULT_CREW.find(d => d.name.toLowerCase() === p.name.toLowerCase());
+      if(def && !p.role){
+        p.nick = def.nick; p.role = def.role; p.task = def.task;
+        changed = true;
+      }
+    });
+    if(changed) setCrew(c);
+    localStorage.setItem('roles-seeded-v1','1');
+  }
+  function setCrew(c){ localStorage.setItem('crew-list', JSON.stringify(c)); }
+
+  function seedMeIntoCrew(me){
+    if(!me) return;
+    const c = getCrew();
+    const exists = c.some(p => p.name.toLowerCase() === me.toLowerCase());
+    if(!exists){
+      c.push({name: me, from:'', to:'', plan:''});
+      setCrew(c);
+    }
+  }
+
+  function renderCrew(){
+    const root = document.getElementById('crewlist');
+    if(!root) return;
+    const me = (localStorage.getItem('crewName') || '').toLowerCase();
+    const crew = getCrew();
+    root.innerHTML = '';
+    crew.forEach((p,i) => {
+      const isMe = p.name.toLowerCase() === me;
+      const isCaptain = (p.role||'').toLowerCase().includes('captain');
+      const row = document.createElement('div');
+      row.className = 'crewrow' + (isMe ? ' me' : '') + (isCaptain ? ' captain' : '');
+      row.innerHTML = `
+        <div class="head">
+          <div class="name">
+            ${isMe ? '<span class="dotme"></span>' : ''}${escapeHtml(p.name)}${isMe ? ' <span class="pill coral" style="margin-left:6px">du</span>' : ''}
+            ${p.role ? '<span class="role-tag">'+escapeHtml(p.role)+'</span>' : ''}
+          </div>
+          <button class="x" data-i="${i}" title="entfernen">×</button>
+        </div>
+        ${p.task ? '<div class="task-display">'+escapeHtml(p.task)+'</div>' : ''}
+        <div class="nickrole">
+          <div><label>Spitzname</label><input data-i="${i}" data-k="nick" placeholder="z.B. Käpt'n Sim" value="${escapeHtml(p.nick||'')}"></div>
+          <div><label>Rolle</label><input data-i="${i}" data-k="role" placeholder="z.B. ⚓ Bootsmann" value="${escapeHtml(p.role||'')}"></div>
+        </div>
+        <label>Aufgabe / Funktion</label>
+        <input data-i="${i}" data-k="task" placeholder="z.B. Anker-Beauftragter, Knoten-Master" value="${escapeHtml(p.task||'')}" style="margin-bottom:8px">
+        <div class="fields">
+          <div><label>An Bord von</label><input data-i="${i}" data-k="from" type="date" value="${p.from||''}"></div>
+          <div><label>bis</label><input data-i="${i}" data-k="to" type="date" value="${p.to||''}"></div>
+        </div>
+        <label>Vor / nach Bord</label>
+        <textarea data-i="${i}" data-k="plan" placeholder="z.B. 28.–30.5. Trogir Hotel Brown Beach · 6.–8.6. Split Heritage Antique">${escapeHtml(p.plan||'')}</textarea>
+      `;
+      root.appendChild(row);
+    });
+    root.querySelectorAll('input[data-k], textarea[data-k]').forEach(el => {
+      el.addEventListener('input', () => {
+        const c = getCrew();
+        c[el.dataset.i][el.dataset.k] = el.value;
+        setCrew(c);
+      });
+    });
+    root.querySelectorAll('.x').forEach(b => {
+      b.addEventListener('click', () => {
+        const c = getCrew();
+        const idx = parseInt(b.dataset.i);
+        if(confirm('„' + c[idx].name + '" aus der Crew-Liste entfernen?')){
+          c.splice(idx, 1);
+          setCrew(c);
+          renderCrew();
+        }
+      });
+    });
+  }
+
+  document.getElementById('add-crew-btn').addEventListener('click', () => {
+    const inp = document.getElementById('new-crew');
+    const n = inp.value.trim();
+    if(!n) return;
+    const c = getCrew();
+    if(c.some(p => p.name.toLowerCase() === n.toLowerCase())){
+      alert('Name ist schon in der Liste');
+      return;
+    }
+    c.push({name:n, from:'', to:'', plan:''});
+    setCrew(c);
+    inp.value = '';
+    renderCrew();
+  });
+  document.getElementById('new-crew').addEventListener('keydown', e => {
+    if(e.key === 'Enter') document.getElementById('add-crew-btn').click();
+  });
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  /* ============ FOOD PLANNER ============ */
+  document.querySelectorAll('#foodboard input').forEach(inp=>{
+    const k = inp.dataset.key;
+    const stored = localStorage.getItem(k);
+    if(stored) inp.value = stored;
+    inp.addEventListener('input', ()=> localStorage.setItem(k, inp.value));
+  });
+
+  /* ============ VOTING (mit Crew-Namen) ============ */
+  const polls = [
+    { id:'vis-tour',   q:'Vis Military Jeep-Tour mitnehmen?',                       opts:['Ja, klingt wild','Nein, lieber chillen'] },
+    { id:'peka',       q:'Peka vorbestellen in Šešula (Maslinica)?',                opts:['Lamm','Oktopus','Beides – Crew = hungrig'] },
+    { id:'hvar-night', q:'Hvar Town: Carpe Diem Beach Late Night?',                 opts:['100%','Lieber früh ins Bett'] },
+    { id:'split-din',  q:'Captains-Dinner Split (Do 4.6.):',                        opts:['Bokeria','Bajamonti','An Bord kochen'] },
+    { id:'brac-stop',  q:'Mittagsstopp Zlatni Rat / Bol auf dem Weg nach Split?',   opts:['Yes','Skip'] }
+  ];
+
+  function getPollVotes(pid){
+    try { return JSON.parse(localStorage.getItem('poll-'+pid) || '{}'); }
+    catch(e){ return {}; }
+  }
+  function setPollVotes(pid, obj){ localStorage.setItem('poll-'+pid, JSON.stringify(obj)); }
+
+  /* ============ LIGHTBOX (Boots-Galerie) ============ */
+  (function(){
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightbox-img');
+    const lbClose = document.getElementById('lightbox-close');
+    document.querySelectorAll('.boatcard .gallery img').forEach(img => {
+      img.addEventListener('click', () => {
+        lbImg.src = img.dataset.full || img.src;
+        lb.classList.add('show');
+      });
+    });
+    function close(){ lb.classList.remove('show'); lbImg.src = ''; }
+    lb.addEventListener('click', e => { if(e.target === lb || e.target === lbImg) close(); });
+    lbClose.addEventListener('click', close);
+    document.addEventListener('keydown', e => { if(e.key === 'Escape') close(); });
+  })();
+
+  function renderVotes(){
+    const wrap = document.getElementById('votes');
+    if(!wrap) return;
+    const me = localStorage.getItem('crewName') || '';
+    wrap.innerHTML = '';
+
+    polls.forEach(p => {
+      const card = document.createElement('div');
+      card.style.marginBottom = '16px';
+      card.innerHTML = '<div style="font-weight:600;margin:6px 0 8px;color:var(--navy)">'+p.q+'</div>';
+
+      const votes = getPollVotes(p.id); // { name: optionIndex }
+      const counts = p.opts.map((_,i) => Object.values(votes).filter(v => v === i).length);
+      const myChoice = votes[me];
+
+      p.opts.forEach((o,i) => {
+        const row = document.createElement('div'); row.className='vote';
+        const isOn = myChoice === i;
+        const voters = Object.entries(votes).filter(([,v]) => v === i).map(([n]) => n);
+        row.innerHTML = `
+          <div style="flex:1">
+            <div>${o}</div>
+            ${voters.length ? '<div style="font-size:11px;color:var(--muted);margin-top:3px">'+voters.map(escapeHtml).join(', ')+'</div>' : ''}
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span class="count">${counts[i]}</span>
+            <button class="${isOn?'on':''}">${isOn?'gewählt':'wählen'}</button>
+          </div>`;
+        row.querySelector('button').addEventListener('click', () => {
+          if(!me){ alert('Bitte erst einloggen'); return; }
+          const v = getPollVotes(p.id);
+          v[me] = i;
+          setPollVotes(p.id, v);
+          renderVotes();
+        });
+        card.appendChild(row);
+      });
+      wrap.appendChild(card);
+    });
+  }
+
+  /* ============ TABS (Food & Drinks) ============ */
+  try {
+    document.querySelectorAll('.tabs').forEach(tabs => {
+      const buttons = tabs.querySelectorAll('button');
+      const parent = tabs.parentElement;
+      if(!parent) return;
+      const panes = parent.querySelectorAll(':scope > .tabpane');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          buttons.forEach(b => b.classList.remove('on'));
+          btn.classList.add('on');
+          const tab = btn.dataset.tab;
+          panes.forEach(p => p.classList.toggle('on', p.dataset.pane === tab));
+        });
+      });
+    });
+  } catch(e){ console.error('Tabs init failed:', e); }
+
+  /* ============ CREW PICKS ============ */
+  const LOC_NAMES = {
+    trogir:'Trogir', maslinica:'Maslinica', vis:'Vis · Komiža',
+    palmizana:'Palmižana', hvar:'Hvar Stadt',
+    vrboska:'Vrboska · Stari Grad', split:'Split'
+  };
+
+  function getPicks(){
+    try { return JSON.parse(localStorage.getItem('crew-picks') || '[]'); }
+    catch(e){ return []; }
+  }
+  function setPicks(arr){ localStorage.setItem('crew-picks', JSON.stringify(arr)); }
+
+  /* ====== Mona's Liste — 30 Spots aus Screenshots ====== */
+  const MONA_SEED = [
+    // Maslinica · Šolta
+    {name:'Konoba Šešula',                    loc:'maslinica', note:'4.4★ · >50€ · Anker-Konoba in der Šešula-Bucht', source:'Mona'},
+    {name:'Restaurant Šakajet',               loc:'maslinica', note:'4.1★ · 25–50€ · Soul Cuisine', source:'Mona'},
+    {name:'Maslinica (Anker-Bucht)',          loc:'maslinica', note:'Šolta-Westspitze · Pin', source:'Mona'},
+    // Vis · Komiža
+    {name:'Konoba Jastožera',                 loc:'vis',       note:'4.4★ · >50€ · Hummerhaus Komiža', source:'Mona'},
+    {name:'Trica Gardelin',                   loc:'vis',       note:'4.7★ · 20–45€ · Fine Dining Komiža', source:'Mona'},
+    // Palmižana
+    {name:'Bacchus Palmižana',                loc:'palmizana', note:'4.0★ · >50€', source:'Mona'},
+    {name:'Ristorante Palmizana Meneghello',  loc:'palmizana', note:'4.4★ · €€ · Meneghello-Family', source:'Mona'},
+    {name:'Restaurant Marina Palmižana',      loc:'palmizana', note:'3.5★ · €€€€', source:'Mona'},
+    // Hvar
+    {name:'Leporini Restaurant',              loc:'hvar',      note:'4.9★ · >50€', source:'Mona'},
+    {name:'Dalmatino',                        loc:'hvar',      note:'4.8★ (2.914) · >50€ · Locals-Favourite', source:'Mona'},
+    {name:'MEDITERAN',                        loc:'hvar',      note:'4.8★ · €€', source:'Mona'},
+    {name:'Aria Restaurant',                  loc:'hvar',      note:'5.0★', source:'Mona'},
+    {name:'Nonica Caffe Bar',                 loc:'hvar',      note:'4.9★ · 5–10€ · Tortenbäckerei', source:'Mona'},
+    {name:'Gelateria Emiliana',               loc:'hvar',      note:'4.6★ (3.054) · €€ · Beste Eisdiele', source:'Mona'},
+    {name:'Kinkin',                           loc:'hvar',      note:'4.8★', source:'Mona'},
+    // Vrboska / Stari Grad
+    {name:'Val Marina Restaurant',            loc:'vrboska',   note:'4.9★ · >50€ (Stari Grad)', source:'Mona'},
+    // Trogir
+    {name:'Restaurant Olive (ex Vanjaka)',    loc:'trogir',    note:'4.5★ · €€ · Kroatisch', source:'Mona'},
+    {name:'Restoran il Ponte',                loc:'trogir',    note:'4.8★ (1.033) · >50€ · Am Bridge', source:'Mona'},
+    {name:'Restoran Sv. Dominik',             loc:'trogir',    note:'4.8★ · >50€', source:'Mona'},
+    {name:'Restaurant&bar DAL MARE',          loc:'trogir',    note:'4.7★ (3.119) · 10–35€', source:'Mona'},
+    // Split
+    {name:'FAT RABBIT by R&B Food',           loc:'split',     note:'4.9★ · 20–40€', source:'Mona'},
+    {name:'Fabrika pizza & pasta',            loc:'split',     note:'4.7★ · 15–30€', source:'Mona'},
+    {name:'Magnus by Vestibul Palace',        loc:'split',     note:'5.0★ · >50€ · im Diokletian-Palast', source:'Mona'},
+    {name:'Parasol – food and bar',           loc:'split',     note:'4.7★ · 15–40€', source:'Mona'},
+    {name:'Articok – food and bar',           loc:'split',     note:'4.7★ · €€', source:'Mona'},
+    {name:'Fish Mama Seafood & Steak',        loc:'split',     note:'4.6★ (2.325) · 20–50€', source:'Mona'},
+    {name:'Lui Restaurant',                   loc:'split',     note:'4.9★ · 10–25€', source:'Mona'},
+    {name:'Restaurant Krug',                  loc:'split',     note:'5.0★ · >50€', source:'Mona'},
+    {name:'Coffee Snob – Specialty Coffee',   loc:'split',     note:'4.7★ · 5–10€ · Beste Specialty Coffee', source:'Mona'},
+    {name:'Konoba Stafileo',                  loc:'split',     note:'4.7★ · 15–40€', source:'Mona'}
+  ];
+
+  // One-time seed Mona's list
+  if(!localStorage.getItem('mona-seed-v1')){
+    const existing = getPicks();
+    // Avoid duplicates by name
+    const existingNames = new Set(existing.map(p => p.name.toLowerCase()));
+    const toAdd = MONA_SEED.filter(p => !existingNames.has(p.name.toLowerCase()));
+    setPicks([...existing, ...toAdd]);
+    localStorage.setItem('mona-seed-v1','1');
+  }
+
+  /* Admin gating */
+  function isAdmin(){
+    const raw = (localStorage.getItem('crewName')||'').toLowerCase().trim();
+    const norm = raw.normalize('NFD').replace(/[̀-ͯ]/g,'');
+    return norm === 'andre';
+  }
+  function applyAdminVisibility(){
+    if(document.body) document.body.classList.toggle('is-admin', isAdmin());
+  }
+
+  function renderPicks(){
+    const list = document.getElementById('pick-list');
+    if(!list) return;
+    const picks = getPicks();
+    list.innerHTML = '';
+    if(!picks.length){
+      list.innerHTML = '<p class="small" style="color:var(--muted);font-style:italic;margin:6px 0">Noch keine Crew-Picks. Tipp: Mona\'s Liste hat 30 Spots — füg sie hier ein, dann erscheinen sie automatisch im richtigen Tag.</p>';
+    } else {
+      picks.forEach((p,i) => {
+        const el = document.createElement('div');
+        el.className = 'pick-item';
+        el.innerHTML = `
+          <span class="where">${LOC_NAMES[p.loc]||p.loc}</span>
+          <div class="pname"><b>${escapeHtml(p.name)}</b>${p.note?' <span style="color:var(--muted)">· '+escapeHtml(p.note)+'</span>':''}</div>
+          <span class="who">${p.source?escapeHtml(p.source):''}</span>
+          <button class="x" data-i="${i}" title="entfernen">×</button>
+        `;
+        list.appendChild(el);
+      });
+      list.querySelectorAll('.x').forEach(b => {
+        b.addEventListener('click', () => {
+          const arr = getPicks();
+          arr.splice(parseInt(b.dataset.i),1);
+          setPicks(arr);
+          renderPicks();
+        });
+      });
+    }
+    injectPicksIntoDays();
+  }
+
+  function injectPicksIntoDays(){
+    const picks = getPicks();
+    document.querySelectorAll('.crew-picks-block').forEach(b => b.remove());
+    const byLoc = {};
+    picks.forEach(p => { (byLoc[p.loc] = byLoc[p.loc]||[]).push(p); });
+    document.querySelectorAll('[data-loc]').forEach(el => {
+      const matches = byLoc[el.dataset.loc] || [];
+      if(!matches.length) return;
+      const block = document.createElement('div');
+      block.className = 'crew-picks-block';
+      let html = '<h4><span class="icon">🌟</span>Crew Picks <span style="font-size:11px;color:var(--muted);font-weight:500;margin-left:4px">(aus Mona\'s Liste &amp; Crew-Tipps)</span></h4><ul>';
+      matches.forEach(p => {
+        html += `<li><b>${escapeHtml(p.name)}</b>${p.note?' — '+escapeHtml(p.note):''}${p.source?'<span class="src">· '+escapeHtml(p.source)+'</span>':''}</li>`;
+      });
+      html += '</ul>';
+      block.innerHTML = html;
+      const body = el.querySelector('.body') || el;
+      body.appendChild(block);
+    });
+  }
+
+  document.getElementById('pick-add').addEventListener('click', () => {
+    const name = document.getElementById('pick-name').value.trim();
+    const loc = document.getElementById('pick-loc').value;
+    const note = document.getElementById('pick-note').value.trim();
+    if(!name || !loc){ alert('Bitte Name und Ort eintragen.'); return; }
+    const arr = getPicks();
+    const me = localStorage.getItem('crewName') || '';
+    arr.push({name, loc, note, source: me});
+    setPicks(arr);
+    document.getElementById('pick-name').value = '';
+    document.getElementById('pick-note').value = '';
+    document.getElementById('pick-loc').value = '';
+    renderPicks();
+  });
+
+  document.getElementById('bulk-toggle').addEventListener('click', () => {
+    document.getElementById('bulk-area').classList.toggle('show');
+  });
+
+  document.getElementById('bulk-add').addEventListener('click', () => {
+    const text = document.getElementById('bulk-text').value;
+    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+    const me = localStorage.getItem('crewName') || '';
+    const arr = getPicks();
+    let added = 0;
+    lines.forEach(line => {
+      const parts = line.split(',').map(s => s.trim());
+      if(parts.length < 2) return;
+      const [name, loc, ...rest] = parts;
+      if(!LOC_NAMES[loc]) return;
+      arr.push({name, loc, note: rest.join(', '), source: me});
+      added++;
+    });
+    setPicks(arr);
+    document.getElementById('bulk-text').value = '';
+    document.getElementById('bulk-area').classList.remove('show');
+    renderPicks();
+    alert(added + ' Spots importiert.');
+  });
+
+  /* ============ SHOPPING LIST ============ */
+  const SHOP_CAT_NAMES = {
+    gemuse:'Obst & Gemüse', brot:'Brot & Teig', fleisch:'Fleisch & Fisch',
+    dairy:'Milch & Käse', snacks:'Snacks', getranke:'Getränke', sonstiges:'Sonstiges'
+  };
+  let shopFilter = 'all';
+
+  function getShop(){
+    try {
+      const stored = JSON.parse(localStorage.getItem('shop-list') || 'null');
+      if(stored) return stored;
+    } catch(e){}
+    // Default seed
+    return [
+      {n:'Tomaten', q:'1 kg', cat:'gemuse', done:false, by:''},
+      {n:'Frisches Brot', q:'2 Laibe', cat:'brot', done:false, by:''},
+      {n:'Olivenöl', q:'1 Flasche', cat:'sonstiges', done:false, by:''},
+      {n:'Wasser still', q:'24 × 1.5L', cat:'getranke', done:false, by:''},
+      {n:'Wasser sprudelnd', q:'12 × 1.5L', cat:'getranke', done:false, by:''},
+      {n:'Bier (Karlovačko/Ožujsko)', q:'2 Kisten', cat:'getranke', done:false, by:''},
+      {n:'Pošip Weißwein', q:'6 Flaschen', cat:'getranke', done:false, by:''},
+      {n:'Aperol + Prosecco', q:'je 2', cat:'getranke', done:false, by:''},
+      {n:'Eier', q:'18er Pack', cat:'dairy', done:false, by:''},
+      {n:'Kaffee gemahlen', q:'500g', cat:'sonstiges', done:false, by:''},
+      {n:'Pršut Schinken', q:'300g', cat:'fleisch', done:false, by:''},
+      {n:'Paški sir Käse', q:'250g', cat:'dairy', done:false, by:''},
+      {n:'Erdnüsse / Pistazien', q:'mix', cat:'snacks', done:false, by:''}
+    ];
+  }
+  function setShop(arr){ localStorage.setItem('shop-list', JSON.stringify(arr)); }
+
+  function renderShop(){
+    const list = document.getElementById('shop-list');
+    if(!list) return;
+    const items = getShop();
+    list.innerHTML = '';
+    const filtered = shopFilter === 'all' ? items : items.filter(i => i.cat === shopFilter);
+    if(!filtered.length){
+      list.innerHTML = '<p class="small" style="color:var(--muted);font-style:italic">Keine Items in dieser Kategorie.</p>';
+      return;
+    }
+    filtered.forEach((it,) => {
+      const i = items.indexOf(it);
+      const row = document.createElement('div');
+      row.className = 'shop-item' + (it.done ? ' done' : '');
+      row.innerHTML = `
+        <input type="checkbox" data-i="${i}" ${it.done?'checked':''} />
+        <div>
+          <div class="name">${escapeHtml(it.n)}</div>
+          ${it.by ? '<div class="meta">eingetragen von '+escapeHtml(it.by)+'</div>' : ''}
+        </div>
+        <span class="qty">${escapeHtml(it.q || '')}</span>
+        <span class="shop-cat-tag ${it.cat}">${escapeHtml(SHOP_CAT_NAMES[it.cat]||it.cat)}</span>
+        <button class="x" data-i="${i}" title="löschen">×</button>
+      `;
+      list.appendChild(row);
+    });
+    list.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const arr = getShop();
+        arr[parseInt(cb.dataset.i)].done = cb.checked;
+        setShop(arr);
+        renderShop();
+      });
+    });
+    list.querySelectorAll('.x').forEach(b => {
+      b.addEventListener('click', () => {
+        const arr = getShop();
+        arr.splice(parseInt(b.dataset.i),1);
+        setShop(arr);
+        renderShop();
+      });
+    });
+  }
+
+  document.querySelectorAll('#shop-cats .shop-cat').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#shop-cats .shop-cat').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      shopFilter = b.dataset.cat;
+      renderShop();
+    });
+  });
+
+  document.getElementById('shop-add').addEventListener('click', () => {
+    const n = document.getElementById('shop-name').value.trim();
+    const q = document.getElementById('shop-qty').value.trim();
+    const cat = document.getElementById('shop-cat').value;
+    if(!n) return;
+    const me = localStorage.getItem('crewName') || '';
+    const arr = getShop();
+    arr.push({n, q, cat, done:false, by: me});
+    setShop(arr);
+    document.getElementById('shop-name').value = '';
+    document.getElementById('shop-qty').value = '';
+    renderShop();
+  });
+  document.getElementById('shop-name').addEventListener('keydown', e => {
+    if(e.key === 'Enter') document.getElementById('shop-add').click();
+  });
+
+  /* ============ FOOD IDEAS ============ */
+  function getIdeas(){
+    try {
+      const stored = JSON.parse(localStorage.getItem('food-ideas') || 'null');
+      if(stored) return stored;
+    } catch(e){}
+    return [
+      {t:'Spaghetti Vongole am 2. Abend (Vis Hafen)', by:''},
+      {t:'Aperol-Boat-Brunch in der Šešula-Bucht', by:''},
+      {t:'Peka Lamm vorbestellen Konoba Šešula', by:''},
+      {t:'Cacio e Pepe als Anker-Lunch', by:''},
+      {t:'Frische Dorade vom Markt grillen', by:''},
+      {t:'Captain\'s Welcome-Cocktail: Gin Tonic mit Rosmarin', by:''}
+    ];
+  }
+  function setIdeas(arr){ localStorage.setItem('food-ideas', JSON.stringify(arr)); }
+
+  function renderIdeas(){
+    const list = document.getElementById('ideas-list');
+    if(!list) return;
+    const ideas = getIdeas();
+    list.innerHTML = '';
+    if(!ideas.length){
+      list.innerHTML = '<p class="small" style="color:var(--muted);font-style:italic">Noch keine Ideen. Wirf was rein!</p>';
+      return;
+    }
+    ideas.forEach((it,i) => {
+      const row = document.createElement('div');
+      row.className = 'idea';
+      row.innerHTML = `
+        <span class="ico">💡</span>
+        <div class="txt">
+          ${escapeHtml(it.t)}
+          ${it.by ? '<div class="by">von '+escapeHtml(it.by)+'</div>' : ''}
+        </div>
+        <button class="x" data-i="${i}" title="löschen">×</button>
+      `;
+      list.appendChild(row);
+    });
+    list.querySelectorAll('.x').forEach(b => {
+      b.addEventListener('click', () => {
+        const arr = getIdeas();
+        arr.splice(parseInt(b.dataset.i),1);
+        setIdeas(arr);
+        renderIdeas();
+      });
+    });
+  }
+
+  document.getElementById('idea-add').addEventListener('click', () => {
+    const t = document.getElementById('idea-text').value.trim();
+    if(!t) return;
+    const me = localStorage.getItem('crewName') || '';
+    const arr = getIdeas();
+    arr.push({t, by: me});
+    setIdeas(arr);
+    document.getElementById('idea-text').value = '';
+    renderIdeas();
+  });
+  document.getElementById('idea-text').addEventListener('keydown', e => {
+    if(e.key === 'Enter') document.getElementById('idea-add').click();
+  });
+
+  /* ============ LEAFLET MAP — Simons Route ============ */
+  const STOPS = [
+    {n:'SCT Marina Trogir',     coord:[43.5169,16.2580], type:'m', day:'Start · Sa 30.5'},
+    {n:'Maslinica (Šolta)',     coord:[43.3994,16.2076], type:'m', day:'Sa 30.5 · ~14 NM'},
+    {n:'Komiža (Vis)',          coord:[43.0461,16.0913], type:'m', day:'So 31.5 · ~22 NM'},
+    {n:'Palmižana (Pakleni)',   coord:[43.1664,16.4126], type:'m', day:'Mo 1.6 · ~18 NM'},
+    {n:'Hvar Stadt',            coord:[43.1729,16.4413], type:'m', day:'Di 2.6 · ~1 NM'},
+    {n:'Vrboska (Hvar)',        coord:[43.1817,16.6803], type:'m', day:'Mi 3.6 · ~12 NM'},
+    {n:'ACI Marina Split',      coord:[43.5081,16.4376], type:'m', day:'Do 4.6 · ~24 NM'},
+    {n:'SCT Marina Trogir',     coord:[43.5169,16.2580], type:'m', day:'Fr 5.6 · ~12 NM (Ziel)'}
+  ];
+
+  function initMap(){
+    if(typeof L === 'undefined'){ setTimeout(initMap, 200); return; }
+    const el = document.getElementById('leafmap');
+    if(!el || el._init) return;
+    el._init = true;
+
+    const map = L.map('leafmap', {scrollWheelZoom:false, zoomControl:true})
+      .setView([43.28, 16.40], 9);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap · © CARTO',
+      subdomains: 'abcd',
+      maxZoom: 18
+    }).addTo(map);
+
+    // Polyline
+    const path = STOPS.map(s => s.coord);
+    L.polyline(path, {
+      color:'#D9744F', weight:4, opacity:.9,
+      dashArray:'8 6', lineCap:'round'
+    }).addTo(map);
+
+    // Markers
+    STOPS.forEach((s,i) => {
+      const num = i; // 0=Start, 1-7=Stops
+      const cls = (i === 0 || i === STOPS.length-1) ? 'navy' : (s.type === 'm' ? 'teal' : 'coral');
+      const icon = L.divIcon({
+        className:'',
+        html:'<div class="pin '+cls+'"><span>'+num+'</span></div>',
+        iconSize:[30,30], iconAnchor:[15,30], popupAnchor:[0,-28]
+      });
+      L.marker(s.coord, {icon}).addTo(map)
+        .bindPopup('<b>'+s.n+'</b><div class="stat">'+s.day+'</div>');
+    });
+
+    // Fit bounds with padding
+    map.fitBounds(L.latLngBounds(path).pad(0.15));
+
+    // Re-render after a moment to fix any container size issues
+    setTimeout(() => { try { map.invalidateSize(); map.fitBounds(L.latLngBounds(path).pad(0.15)); } catch(e){} }, 300);
+    setTimeout(() => { try { map.invalidateSize(); } catch(e){} }, 1200);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initMap);
+  } else {
+    initMap();
+  }
+
+  /* ============ MONA'S SPOTS MAP ============ */
+  const MONA_COORDS = {
+    'Konoba Šešula':                      [43.3978, 16.2093],
+    'Restaurant Šakajet':                 [43.4061, 16.3438],
+    'Maslinica (Anker-Bucht)':            [43.3994, 16.2076],
+    'Konoba Jastožera':                   [43.0461, 16.0913],
+    'Trica Gardelin':                     [43.0454, 16.0905],
+    'Bacchus Palmižana':                  [43.1655, 16.4126],
+    'Ristorante Palmizana Meneghello':    [43.1660, 16.4124],
+    'Restaurant Marina Palmižana':        [43.1664, 16.4131],
+    'Leporini Restaurant':                [43.1731, 16.4413],
+    'Dalmatino':                          [43.1734, 16.4424],
+    'MEDITERAN':                          [43.1721, 16.4434],
+    'Aria Restaurant':                    [43.1731, 16.4408],
+    'Nonica Caffe Bar':                   [43.1729, 16.4419],
+    'Gelateria Emiliana':                 [43.1730, 16.4427],
+    'Kinkin':                             [43.1737, 16.4424],
+    'Val Marina Restaurant':              [43.1855, 16.5942],
+    'Restaurant Olive (ex Vanjaka)':      [43.5172, 16.2532],
+    'Restoran il Ponte':                  [43.5170, 16.2526],
+    'Restoran Sv. Dominik':               [43.5168, 16.2528],
+    'Restaurant&bar DAL MARE':            [43.5167, 16.2545],
+    'FAT RABBIT by R&B Food':             [43.5102, 16.4396],
+    'Fabrika pizza & pasta':              [43.5079, 16.4422],
+    'Magnus by Vestibul Palace':          [43.5085, 16.4393],
+    'Parasol – food and bar':             [43.5101, 16.4404],
+    'Articok – food and bar':             [43.5093, 16.4395],
+    'Fish Mama Seafood & Steak':          [43.5095, 16.4392],
+    'Lui Restaurant':                     [43.5099, 16.4405],
+    'Restaurant Krug':                    [43.5079, 16.4416],
+    'Coffee Snob – Specialty Coffee':     [43.5081, 16.4395],
+    'Konoba Stafileo':                    [43.5085, 16.4408]
+  };
+  const LOC_COLOR = {trogir:'g', split:'n', maslinica:'t', vis:'t', palmizana:'', hvar:'', vrboska:''};
+
+  function initMonaMap(){
+    if(typeof L === 'undefined'){ setTimeout(initMonaMap, 200); return; }
+    const el = document.getElementById('monamap');
+    if(!el || el._init) return;
+    el._init = true;
+
+    const map = L.map('monamap', {scrollWheelZoom:false, zoomControl:true})
+      .setView([43.28, 16.40], 9);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution:'© OpenStreetMap · © CARTO',
+      subdomains:'abcd', maxZoom:18
+    }).addTo(map);
+
+    const picks = (typeof getPicks === 'function') ? getPicks() : [];
+    const bounds = [];
+    let count = 0;
+
+    picks.forEach(p => {
+      const coord = MONA_COORDS[p.name];
+      if(!coord) return;
+      const colorClass = LOC_COLOR[p.loc] || '';
+      const icon = L.divIcon({
+        className:'',
+        html:'<div class="pin-mona '+colorClass+'"><span>★</span></div>',
+        iconSize:[24,24], iconAnchor:[12,24], popupAnchor:[0,-22]
+      });
+      const popupHtml = '<b>'+p.name+'</b>'+(p.note?'<div class="stat">'+p.note+'</div>':'');
+      L.marker(coord, {icon}).addTo(map).bindPopup(popupHtml);
+      bounds.push(coord);
+      count++;
+    });
+
+    if(bounds.length){
+      map.fitBounds(L.latLngBounds(bounds).pad(0.15));
+    }
+
+    setTimeout(() => { try { map.invalidateSize(); if(bounds.length) map.fitBounds(L.latLngBounds(bounds).pad(0.15)); } catch(e){} }, 300);
+    setTimeout(() => { try { map.invalidateSize(); } catch(e){} }, 1200);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initMonaMap);
+  } else {
+    initMonaMap();
+  }
+
+  /* ============ AUTO-UNLOCK (must run after all const/seed defs) ============ */
+  try {
+    if(localStorage.getItem('crewName')){
+      unlock();
+    }
+  } catch(e){ console.error('Auto-unlock failed:', e); }
+</script>
+</body>
+</html>
