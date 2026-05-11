@@ -657,9 +657,160 @@
     font-style:italic;margin-bottom:8px;
   }
   .crewrow .task-display b{color:var(--navy);font-style:normal}
+
+  /* ---------- SUGGESTIONS / FEEDBACK ---------- */
+  .send-card{
+    background:linear-gradient(180deg,#FBF6EC 0%,#FFF3EC 100%);
+    border:1px dashed rgba(216,116,79,.45);border-radius:14px;
+    padding:14px 14px 12px;margin-top:14px;
+  }
+  .send-card .lead{
+    font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--coral);font-weight:700;margin-bottom:6px;
+  }
+  .send-card h4{margin-bottom:6px;color:var(--navy);font-size:15px}
+  .send-card p.hint{color:var(--muted);font-size:12px;margin:0 0 10px}
+  .send-form{display:grid;gap:8px}
+  .send-form select,.send-form input,.send-form textarea{
+    width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+    font:inherit;font-size:13px;outline:none;background:#fff;color:var(--ink);
+  }
+  .send-form textarea{min-height:80px;resize:vertical;line-height:1.4}
+  .send-form select:focus,.send-form input:focus,.send-form textarea:focus{border-color:var(--coral)}
+  .send-actions{display:flex;flex-wrap:wrap;gap:6px}
+  .send-actions button{
+    flex:1 1 140px;border:none;padding:11px 12px;border-radius:10px;
+    font:inherit;font-weight:700;cursor:pointer;font-size:13px;
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .send-actions .send-mail{background:var(--navy);color:#fff}
+  .send-actions .send-mail:hover{background:var(--navy-2)}
+  .send-actions .send-wa{background:#25D366;color:#fff}
+  .send-actions .send-wa:hover{background:#1FB855}
+  .send-actions .send-save{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .send-actions .send-save:hover{background:#FBF6EC}
+  .sent-ok{
+    background:rgba(14,124,123,.10);color:var(--teal);
+    border-left:3px solid var(--teal);
+    padding:8px 10px;border-radius:6px;font-size:12px;margin-top:8px;
+    display:none;
+  }
+  .sent-ok.show{display:block}
+
+  /* My-sent log */
+  .my-sent{margin-top:12px;padding-top:10px;border-top:1px dashed rgba(216,116,79,.25)}
+  .my-sent h5{
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);font-weight:700;margin:0 0 8px;
+  }
+  .my-sent-item{
+    display:flex;gap:8px;align-items:flex-start;
+    background:#fff;border:1px solid var(--line);border-radius:8px;
+    padding:8px 10px;font-size:12px;margin-bottom:6px;
+  }
+  .my-sent-item .ts{color:var(--muted);font-size:10px;flex:0 0 auto}
+  .my-sent-item .txt{flex:1;color:var(--ink);white-space:pre-wrap;word-wrap:break-word}
+  .my-sent-item .x{
+    background:none;border:none;color:#B8B8B8;cursor:pointer;font-size:15px;
+    line-height:1;padding:0 2px;flex:0 0 auto;
+  }
+  .my-sent-item .x:hover{color:var(--coral)}
+  .my-sent-item .kind{
+    display:inline-block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+    background:var(--sand);color:var(--navy);padding:2px 6px;border-radius:999px;
+    font-weight:700;margin-right:6px;
+  }
+  .my-sent-item .kind.feedback{background:rgba(14,124,123,.15);color:var(--teal)}
+  .my-sent-item .kind.suggestion{background:rgba(216,116,79,.15);color:var(--coral)}
+
+  /* ---------- ADMIN TICKETS ---------- */
+  .tickets-card{
+    background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:18px;border:1px solid var(--line);margin-bottom:14px;
+  }
+  .tickets-card .head{
+    display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;
+  }
+  .tickets-card .head h3{flex:1;display:flex;align-items:center;gap:8px}
+  .tickets-card .head .count-pill{
+    background:var(--coral);color:#fff;padding:3px 10px;border-radius:999px;
+    font-size:11px;font-weight:700;letter-spacing:.04em;
+  }
+  .tickets-card .head .count-pill.zero{background:#B8B8B8}
+  .tickets-card .filters{
+    display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;
+    background:#FBF8F2;border:1px solid var(--line);border-radius:10px;padding:3px;
+  }
+  .tickets-card .filters button{
+    flex:1;background:none;border:none;padding:7px 10px;font:inherit;font-size:12px;
+    font-weight:700;color:var(--muted);cursor:pointer;border-radius:7px;
+    white-space:nowrap;
+  }
+  .tickets-card .filters button.on{background:#fff;color:var(--navy);box-shadow:0 2px 4px rgba(11,37,69,.08)}
+  .ticket-add{
+    background:#FBF8F2;border:1px solid var(--line);border-radius:12px;
+    padding:12px;margin-bottom:12px;display:grid;gap:8px;
+  }
+  .ticket-add .row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .ticket-add input,.ticket-add select,.ticket-add textarea{
+    width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;
+    font:inherit;font-size:13px;outline:none;background:#fff;color:var(--ink);
+  }
+  .ticket-add textarea{min-height:54px;resize:vertical;line-height:1.4}
+  .ticket-add input:focus,.ticket-add select:focus,.ticket-add textarea:focus{border-color:var(--coral)}
+  .ticket-add button{
+    background:var(--coral);color:#fff;border:none;padding:11px;border-radius:10px;
+    font:inherit;font-weight:700;cursor:pointer;font-size:13px;
+  }
+  .ticket-add button:hover{background:#C5673F}
+  .ticket-list{display:flex;flex-direction:column;gap:8px}
+  .ticket{
+    background:#FBF8F2;border:1px solid var(--line);border-left:3px solid var(--muted);
+    border-radius:10px;padding:10px 12px;font-size:13px;
+  }
+  .ticket.status-open{border-left-color:var(--coral)}
+  .ticket.status-progress{border-left-color:var(--gold)}
+  .ticket.status-done{border-left-color:var(--teal);opacity:.7}
+  .ticket.status-reject{border-left-color:#B8B8B8;opacity:.5}
+  .ticket .top{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+  .ticket .who{font-weight:700;color:var(--navy);font-size:13px}
+  .ticket .kind-pill{
+    display:inline-block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+    padding:2px 7px;border-radius:999px;font-weight:700;
+  }
+  .ticket .kind-pill.suggestion{background:rgba(216,116,79,.15);color:var(--coral)}
+  .ticket .kind-pill.feedback{background:rgba(14,124,123,.15);color:var(--teal)}
+  .ticket .kind-pill.pick{background:rgba(200,162,91,.18);color:#8A6E2F}
+  .ticket .kind-pill.other{background:var(--sand);color:var(--navy)}
+  .ticket .ts{color:var(--muted);font-size:10px;margin-left:auto}
+  .ticket .body{margin:4px 0 8px;white-space:pre-wrap;word-wrap:break-word;color:var(--ink)}
+  .ticket .actions{display:flex;flex-wrap:wrap;gap:5px}
+  .ticket .actions button{
+    background:#fff;border:1px solid var(--line);color:var(--navy);
+    padding:5px 9px;border-radius:6px;font:inherit;font-size:11px;font-weight:600;
+    cursor:pointer;
+  }
+  .ticket .actions button:hover{background:#FBF6EC;border-color:var(--coral);color:var(--coral)}
+  .ticket .actions button.del{color:#B8B8B8}
+  .ticket .actions button.del:hover{color:var(--coral);border-color:var(--coral);background:#fff}
+  .ticket-empty{
+    color:var(--muted);font-style:italic;font-size:13px;text-align:center;
+    padding:18px 0;
+  }
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--navy);color:#fff;padding:12px 18px;border-radius:10px;
+    font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25);
+    z-index:1500;opacity:0;transition:opacity .25s ease,transform .25s ease;
+    pointer-events:none;max-width:90vw;text-align:center;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <!-- ============ LOGIN OVERLAY ============ -->
 <div class="lock" id="lock">
@@ -1404,9 +1555,102 @@
   <div class="section-h"><h2>Crew Abstimmung</h2><span class="line"></span></div>
 
   <div class="planner">
-    <div class="small">Tipp &amp; entscheid mit – Stimmen werden lokal getrackt (Demo). Echtes Crew-Voting kommt mit dem Backend nach.</div>
+    <div class="small">Tipp &amp; entscheid mit – Stimmen werden lokal pro Gerät getrackt. Du fehlt was zur Auswahl? Schick André unten einen Vorschlag.</div>
 
     <div id="votes"></div>
+
+    <!-- Crew suggestion: new poll option OR completely new poll -->
+    <div class="send-card">
+      <div class="lead">💡 Crew-Vorschlag</div>
+      <h4>Was sollten wir noch abstimmen?</h4>
+      <p class="hint">Schick André einen Vorschlag — eine neue Antwort-Option zu einer bestehenden Frage oder eine ganz neue Frage. Landet sofort in seinem Admin-Inbox.</p>
+      <div class="send-form">
+        <select id="sug-poll">
+          <option value="">— Neue Abstimmungsfrage —</option>
+        </select>
+        <input id="sug-title" placeholder="Kurz: worum geht's? (z.B. „Hvar Pizza-Stopp")" maxlength="120" />
+        <textarea id="sug-detail" placeholder="Details: bei neuer Option = die Option. Bei neuer Frage = Frage + 2–4 Antwortoptionen." maxlength="600"></textarea>
+        <div class="send-actions">
+          <button class="send-mail" id="sug-send" type="button">📨 An André senden</button>
+        </div>
+      </div>
+      <div class="my-sent" id="sug-mine" hidden>
+        <h5>Meine Vorschläge</h5>
+        <div id="sug-mine-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FEEDBACK / WUNSCH ============ -->
+  <div class="section-h"><h2>📬 Feedback &amp; Wünsche</h2><span class="line"></span></div>
+
+  <div class="planner">
+    <div class="small">Etwas auf dem Herzen? Kabinenwunsch, Allergie, Spotify-Idee, Diät, Sondersache? Schick es direkt an André.</div>
+
+    <div class="send-card">
+      <div class="lead">📬 An André</div>
+      <h4>Sag, was du brauchst</h4>
+      <p class="hint">Landet in André's Admin-Inbox — sonst sieht's keiner aus der Crew.</p>
+      <div class="send-form">
+        <select id="fb-kind">
+          <option value="general">Allgemein</option>
+          <option value="cabin">Kabinen-/Schlafwunsch</option>
+          <option value="food">Essen / Allergie / Diät</option>
+          <option value="medical">Medizinisch / Sondersache</option>
+          <option value="logistic">An-/Abreise / Logistik</option>
+          <option value="fun">Idee / Fun</option>
+        </select>
+        <textarea id="fb-text" placeholder="Schreib's einfach so wie du's in WhatsApp tippen würdest…" maxlength="1000"></textarea>
+        <div class="send-actions">
+          <button class="send-mail" id="fb-send" type="button">📨 An André senden</button>
+        </div>
+      </div>
+      <div class="my-sent" id="fb-mine" hidden>
+        <h5>Mein gesendetes Feedback</h5>
+        <div id="fb-mine-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ADMIN: TICKETS (only Andre) ============ -->
+  <div class="picks-admin">
+    <div class="section-h"><h2>🛡️ Tickets <span class="admin-badge">Admin</span></h2><span class="line"></span></div>
+
+    <div class="tickets-card">
+      <div class="head">
+        <h3>📋 Crew-Wünsche &amp; Tickets</h3>
+        <span class="count-pill" id="tk-count">0 offen</span>
+      </div>
+      <p class="small" style="color:var(--muted);font-size:13px;margin:0 0 12px">
+        Hier landen Crew-Wünsche aus WhatsApp/Mail. Trage sie kurz ein, behalte Status &amp; Aktionen im Blick.
+        Quick-Actions schieben Restaurants direkt in die Crew-Picks oder zeigen dir ein Poll-Snippet zum Reinkopieren.
+      </p>
+
+      <div class="filters" role="tablist">
+        <button class="on" data-tkf="all">Alle</button>
+        <button data-tkf="open">Offen</button>
+        <button data-tkf="progress">In Arbeit</button>
+        <button data-tkf="done">Erledigt</button>
+        <button data-tkf="reject">Abgelehnt</button>
+      </div>
+
+      <div class="ticket-add">
+        <div class="row">
+          <input id="tk-from" placeholder="Von (z.B. Mona)" />
+          <select id="tk-kind">
+            <option value="suggestion">Voting-Vorschlag</option>
+            <option value="feedback">Feedback</option>
+            <option value="pick">Restaurant / Spot</option>
+            <option value="other">Sonstiges</option>
+          </select>
+        </div>
+        <input id="tk-title" placeholder="Titel (kurz)" maxlength="120" />
+        <textarea id="tk-body" placeholder="Inhalt… (kopier ggf. aus WhatsApp)" maxlength="1500"></textarea>
+        <button id="tk-add" type="button">+ Ticket anlegen</button>
+      </div>
+
+      <div class="ticket-list" id="tk-list"></div>
+    </div>
   </div>
 
   <footer>
@@ -1416,6 +1660,49 @@
 </div>
 
 <script>
+  /* ============ SUPABASE BACKEND ============ */
+  const SUPA_URL = 'https://xcalfhpllpyzfycgpxtr.supabase.co';
+  const SUPA_KEY = 'sb_publishable_H-RMhqUd6SEbZ41fQSzr_A_-O6uzCnx';
+
+  const Supa = {
+    async _req(method, path, body, prefer){
+      const headers = {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY
+      };
+      if(body !== undefined){ headers['Content-Type'] = 'application/json'; }
+      if(prefer){ headers['Prefer'] = prefer; }
+      const res = await fetch(SUPA_URL + '/rest/v1/' + path, {
+        method, headers,
+        body: body !== undefined ? JSON.stringify(body) : undefined
+      });
+      if(!res.ok){
+        const txt = await res.text().catch(()=>'');
+        throw new Error('Supabase ' + method + ' ' + path + ' → ' + res.status + ' ' + txt);
+      }
+      if(res.status === 204) return null;
+      const ct = res.headers.get('content-type') || '';
+      return ct.includes('application/json') ? res.json() : null;
+    },
+    select(table, query){ return this._req('GET', table + (query ? '?' + query : '')); },
+    insert(table, row){ return this._req('POST', table, row, 'return=representation'); },
+    update(table, query, patch){ return this._req('PATCH', table + '?' + query, patch, 'return=representation'); },
+    upsert(table, row){ return this._req('POST', table, row, 'resolution=merge-duplicates,return=representation'); },
+    remove(table, query){ return this._req('DELETE', table + '?' + query); }
+  };
+
+  /* ============ TOAST ============ */
+  let _toastTimer;
+  function toast(msg, kind){
+    const el = document.getElementById('toast');
+    if(!el) return;
+    el.textContent = msg;
+    el.style.background = kind === 'err' ? 'var(--coral)' : (kind === 'ok' ? 'var(--teal)' : 'var(--navy)');
+    el.classList.add('show');
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(()=> el.classList.remove('show'), 3200);
+  }
+
   /* ============ LOGIN ============ */
   const PW = 'sailingcroatia';
   const lock = document.getElementById('lock');
@@ -1447,7 +1734,21 @@
     renderPicks();
     renderShop();
     renderIdeas();
+    renderMySuggestions();
+    renderMyFeedback();
+    populateSuggestionPolls();
+    if(isAdmin()) renderTickets();
   }
+
+  // Refresh DB-backed views when the tab becomes visible again
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden) return;
+    if(!localStorage.getItem('crewName')) return;
+    renderVotes();
+    renderMySuggestions();
+    renderMyFeedback();
+    if(isAdmin()) renderTickets();
+  });
 
   // NOTE: auto-unlock moved to end of script to avoid TDZ on const definitions
 
@@ -1600,11 +1901,54 @@
     { id:'brac-stop',  q:'Mittagsstopp Zlatni Rat / Bol auf dem Weg nach Split?',   opts:['Yes','Skip'] }
   ];
 
-  function getPollVotes(pid){
-    try { return JSON.parse(localStorage.getItem('poll-'+pid) || '{}'); }
-    catch(e){ return {}; }
+  // Cross-device votes via Supabase, with local cache for instant render & offline.
+  let _votesCache = null;
+  let _votesLoading = null;
+
+  function _cacheVotesLocal(map){
+    try { localStorage.setItem('votes-cache-v1', JSON.stringify(map)); } catch(e){}
   }
-  function setPollVotes(pid, obj){ localStorage.setItem('poll-'+pid, JSON.stringify(obj)); }
+  function _loadVotesLocal(){
+    try { return JSON.parse(localStorage.getItem('votes-cache-v1') || '{}'); } catch(e){ return {}; }
+  }
+  async function loadAllVotes(force){
+    if(_votesCache && !force) return _votesCache;
+    if(_votesLoading) return _votesLoading;
+    _votesLoading = (async () => {
+      try {
+        const rows = await Supa.select('sc_votes', 'select=voter_name,poll_id,option_index');
+        const map = {};
+        rows.forEach(r => {
+          (map[r.poll_id] = map[r.poll_id] || {})[r.voter_name] = r.option_index;
+        });
+        _votesCache = map;
+        _cacheVotesLocal(map);
+        return map;
+      } catch(e){
+        console.error('loadAllVotes failed, using local cache:', e);
+        const cached = _loadVotesLocal();
+        _votesCache = cached;
+        return cached;
+      } finally {
+        _votesLoading = null;
+      }
+    })();
+    return _votesLoading;
+  }
+  function getPollVotes(pid){
+    const all = _votesCache || _loadVotesLocal();
+    return all[pid] || {};
+  }
+  async function castVote(pid, optionIndex){
+    const me = (localStorage.getItem('crewName') || '').trim();
+    if(!me) throw new Error('Not logged in');
+    // Optimistic local update
+    _votesCache = _votesCache || _loadVotesLocal();
+    (_votesCache[pid] = _votesCache[pid] || {})[me] = optionIndex;
+    _cacheVotesLocal(_votesCache);
+    // Server upsert (composite PK voter_name+poll_id resolves duplicates)
+    await Supa.upsert('sc_votes', { voter_name: me, poll_id: pid, option_index: optionIndex });
+  }
 
   /* ============ LIGHTBOX (Boots-Galerie) ============ */
   (function(){
@@ -1623,18 +1967,30 @@
     document.addEventListener('keydown', e => { if(e.key === 'Escape') close(); });
   })();
 
-  function renderVotes(){
+  async function renderVotes(){
     const wrap = document.getElementById('votes');
     if(!wrap) return;
-    const me = localStorage.getItem('crewName') || '';
-    wrap.innerHTML = '';
+    const me = (localStorage.getItem('crewName') || '').trim();
 
+    // Render immediately from cache so the UI is never empty
+    drawVotes(wrap, me);
+    // Then refresh from server and re-draw if anything changed
+    try {
+      await loadAllVotes(true);
+      drawVotes(wrap, me);
+    } catch(e){
+      console.error('renderVotes refresh failed:', e);
+    }
+  }
+
+  function drawVotes(wrap, me){
+    wrap.innerHTML = '';
     polls.forEach(p => {
       const card = document.createElement('div');
       card.style.marginBottom = '16px';
-      card.innerHTML = '<div style="font-weight:600;margin:6px 0 8px;color:var(--navy)">'+p.q+'</div>';
+      card.innerHTML = '<div style="font-weight:600;margin:6px 0 8px;color:var(--navy)">'+escapeHtml(p.q)+'</div>';
 
-      const votes = getPollVotes(p.id); // { name: optionIndex }
+      const votes = getPollVotes(p.id);
       const counts = p.opts.map((_,i) => Object.values(votes).filter(v => v === i).length);
       const myChoice = votes[me];
 
@@ -1644,19 +2000,22 @@
         const voters = Object.entries(votes).filter(([,v]) => v === i).map(([n]) => n);
         row.innerHTML = `
           <div style="flex:1">
-            <div>${o}</div>
+            <div>${escapeHtml(o)}</div>
             ${voters.length ? '<div style="font-size:11px;color:var(--muted);margin-top:3px">'+voters.map(escapeHtml).join(', ')+'</div>' : ''}
           </div>
           <div style="display:flex;gap:8px;align-items:center">
             <span class="count">${counts[i]}</span>
             <button class="${isOn?'on':''}">${isOn?'gewählt':'wählen'}</button>
           </div>`;
-        row.querySelector('button').addEventListener('click', () => {
-          if(!me){ alert('Bitte erst einloggen'); return; }
-          const v = getPollVotes(p.id);
-          v[me] = i;
-          setPollVotes(p.id, v);
-          renderVotes();
+        row.querySelector('button').addEventListener('click', async () => {
+          if(!me){ toast('Bitte erst einloggen', 'err'); return; }
+          try {
+            await castVote(p.id, i);
+            drawVotes(wrap, me);
+          } catch(e){
+            console.error(e);
+            toast('Stimme konnte nicht gespeichert werden. Internet?', 'err');
+          }
         });
         card.appendChild(row);
       });
@@ -2154,6 +2513,364 @@
   } else {
     initMonaMap();
   }
+
+  /* ============ SUGGESTIONS (Crew → Admin) ============ */
+  function populateSuggestionPolls(){
+    const sel = document.getElementById('sug-poll');
+    if(!sel) return;
+    // Keep only the placeholder option, repopulate from current polls
+    sel.querySelectorAll('option:not(:first-child)').forEach(o => o.remove());
+    polls.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.id;
+      o.textContent = '+ Option zu: ' + p.q;
+      sel.appendChild(o);
+    });
+  }
+
+  async function submitSuggestion(){
+    const me = (localStorage.getItem('crewName') || '').trim();
+    if(!me){ toast('Bitte erst einloggen', 'err'); return; }
+    const pollSel = document.getElementById('sug-poll');
+    const titleEl = document.getElementById('sug-title');
+    const detailEl = document.getElementById('sug-detail');
+    const title = titleEl.value.trim();
+    const detail = detailEl.value.trim();
+    if(!title){ toast('Bitte einen kurzen Titel eingeben', 'err'); titleEl.focus(); return; }
+
+    const btn = document.getElementById('sug-send');
+    btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Sende…';
+    try {
+      await Supa.insert('sc_suggestions', {
+        from_name: me,
+        poll_id: pollSel.value || null,
+        title,
+        detail: detail || null
+      });
+      titleEl.value = ''; detailEl.value = ''; pollSel.value = '';
+      toast('✓ Vorschlag gesendet — André sieht ihn im Admin-Inbox', 'ok');
+      renderMySuggestions();
+      if(isAdmin()) renderTickets();
+    } catch(e){
+      console.error(e);
+      toast('Senden fehlgeschlagen. Internet checken & nochmal.', 'err');
+    } finally {
+      btn.disabled = false; btn.textContent = orig;
+    }
+  }
+
+  async function renderMySuggestions(){
+    const wrap = document.getElementById('sug-mine');
+    const list = document.getElementById('sug-mine-list');
+    if(!wrap || !list) return;
+    const me = (localStorage.getItem('crewName') || '').trim();
+    if(!me){ wrap.hidden = true; return; }
+    try {
+      const q = 'select=id,created_at,title,detail,poll_id,status'
+              + '&from_name=eq.' + encodeURIComponent(me)
+              + '&order=created_at.desc&limit=20';
+      const rows = await Supa.select('sc_suggestions', q);
+      if(!rows.length){ wrap.hidden = true; return; }
+      wrap.hidden = false;
+      list.innerHTML = '';
+      rows.forEach(r => {
+        const dt = new Date(r.created_at);
+        const ds = dt.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'}) + ' ' + dt.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+        const el = document.createElement('div');
+        el.className = 'my-sent-item';
+        el.innerHTML = `
+          <div class="ts">${ds}</div>
+          <div class="txt">
+            <span class="kind suggestion">${r.status === 'done' ? '✓ Erledigt' : (r.status === 'reject' ? '✗ Abgelehnt' : (r.status === 'progress' ? '⏳ In Arbeit' : 'Offen'))}</span>
+            <b>${escapeHtml(r.title)}</b>${r.detail ? '\n' + escapeHtml(r.detail) : ''}
+          </div>
+        `;
+        list.appendChild(el);
+      });
+    } catch(e){
+      console.error('renderMySuggestions failed:', e);
+      wrap.hidden = true;
+    }
+  }
+
+  document.getElementById('sug-send').addEventListener('click', submitSuggestion);
+
+  /* ============ FEEDBACK (Crew → Admin) ============ */
+  async function submitFeedback(){
+    const me = (localStorage.getItem('crewName') || '').trim();
+    if(!me){ toast('Bitte erst einloggen', 'err'); return; }
+    const kindEl = document.getElementById('fb-kind');
+    const textEl = document.getElementById('fb-text');
+    const body = textEl.value.trim();
+    if(!body){ toast('Bitte was eintippen', 'err'); textEl.focus(); return; }
+
+    const btn = document.getElementById('fb-send');
+    btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Sende…';
+    try {
+      await Supa.insert('sc_feedback', {
+        from_name: me, kind: kindEl.value, body
+      });
+      textEl.value = ''; kindEl.value = 'general';
+      toast('✓ Feedback gesendet — André sieht es im Admin-Inbox', 'ok');
+      renderMyFeedback();
+      if(isAdmin()) renderTickets();
+    } catch(e){
+      console.error(e);
+      toast('Senden fehlgeschlagen. Internet?', 'err');
+    } finally {
+      btn.disabled = false; btn.textContent = orig;
+    }
+  }
+
+  const FB_KIND_LABEL = {
+    general:'Allgemein', cabin:'Kabine', food:'Essen', medical:'Medizinisch',
+    logistic:'Logistik', fun:'Idee'
+  };
+
+  async function renderMyFeedback(){
+    const wrap = document.getElementById('fb-mine');
+    const list = document.getElementById('fb-mine-list');
+    if(!wrap || !list) return;
+    const me = (localStorage.getItem('crewName') || '').trim();
+    if(!me){ wrap.hidden = true; return; }
+    try {
+      const q = 'select=id,created_at,kind,body,status'
+              + '&from_name=eq.' + encodeURIComponent(me)
+              + '&order=created_at.desc&limit=20';
+      const rows = await Supa.select('sc_feedback', q);
+      if(!rows.length){ wrap.hidden = true; return; }
+      wrap.hidden = false;
+      list.innerHTML = '';
+      rows.forEach(r => {
+        const dt = new Date(r.created_at);
+        const ds = dt.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'}) + ' ' + dt.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+        const el = document.createElement('div');
+        el.className = 'my-sent-item';
+        const statusLabel = r.status === 'done' ? '✓ Erledigt' : (r.status === 'reject' ? '✗ Abgelehnt' : (r.status === 'progress' ? '⏳ In Arbeit' : 'Offen'));
+        el.innerHTML = `
+          <div class="ts">${ds}</div>
+          <div class="txt">
+            <span class="kind feedback">${escapeHtml(FB_KIND_LABEL[r.kind]||r.kind)} · ${statusLabel}</span>
+            ${escapeHtml(r.body)}
+          </div>
+        `;
+        list.appendChild(el);
+      });
+    } catch(e){
+      console.error('renderMyFeedback failed:', e);
+      wrap.hidden = true;
+    }
+  }
+
+  document.getElementById('fb-send').addEventListener('click', submitFeedback);
+
+  /* ============ ADMIN TICKETS (unified inbox) ============ */
+  const TK_KIND_LABEL = {
+    suggestion:'Vorschlag', feedback:'Feedback', pick:'Spot/Restaurant',
+    other:'Sonstiges'
+  };
+  const TK_STATUS_NEXT = { open:'progress', progress:'done', done:'open', reject:'open' };
+  let _tkFilter = 'all';
+
+  function tkRowToItem(r, kind, source){
+    return {
+      _src: source,
+      _kind: kind,
+      _id: r.id,
+      from_name: r.from_name,
+      title: r.title || (kind === 'feedback' ? (FB_KIND_LABEL[r.kind] || 'Feedback') : ''),
+      body: kind === 'suggestion' ? (r.detail || '') : (r.body || ''),
+      poll_id: r.poll_id || null,
+      created_at: r.created_at,
+      status: r.status || 'open'
+    };
+  }
+
+  async function loadAllTickets(){
+    const [sugs, fbs, tks] = await Promise.all([
+      Supa.select('sc_suggestions', 'select=*&order=created_at.desc'),
+      Supa.select('sc_feedback',    'select=*&order=created_at.desc'),
+      Supa.select('sc_tickets',     'select=*&order=created_at.desc')
+    ]);
+    const items = [
+      ...sugs.map(r => tkRowToItem(r, 'suggestion', 'sc_suggestions')),
+      ...fbs .map(r => tkRowToItem(r, 'feedback',   'sc_feedback')),
+      ...tks .map(r => tkRowToItem(r, r.kind || 'other', 'sc_tickets'))
+    ];
+    items.sort((a,b) => b.created_at.localeCompare(a.created_at));
+    return items;
+  }
+
+  function statusLabel(s){
+    return s === 'done' ? '✓ Erledigt'
+         : s === 'reject' ? '✗ Abgelehnt'
+         : s === 'progress' ? '⏳ In Arbeit'
+         : 'Offen';
+  }
+
+  async function renderTickets(){
+    if(!isAdmin()) return;
+    const listEl = document.getElementById('tk-list');
+    const countEl = document.getElementById('tk-count');
+    if(!listEl || !countEl) return;
+    listEl.innerHTML = '<div class="ticket-empty">Lade…</div>';
+
+    let items;
+    try { items = await loadAllTickets(); }
+    catch(e){
+      console.error('renderTickets failed:', e);
+      listEl.innerHTML = '<div class="ticket-empty">Fehler beim Laden. Internet?</div>';
+      return;
+    }
+
+    const openCount = items.filter(i => i.status === 'open').length;
+    countEl.textContent = openCount + ' offen';
+    countEl.classList.toggle('zero', openCount === 0);
+
+    const filtered = _tkFilter === 'all' ? items : items.filter(i => i.status === _tkFilter);
+    if(!filtered.length){
+      listEl.innerHTML = '<div class="ticket-empty">' +
+        (items.length === 0 ? 'Noch nichts hier. Crew-Submissions tauchen automatisch auf.' : 'Kein Eintrag in dieser Kategorie.') +
+        '</div>';
+      return;
+    }
+
+    listEl.innerHTML = '';
+    filtered.forEach(it => {
+      const el = document.createElement('div');
+      el.className = 'ticket status-' + it.status;
+      const dt = new Date(it.created_at);
+      const ds = dt.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'}) + ' · ' +
+                 dt.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+      const pillKind = (it._kind === 'suggestion' || it._kind === 'feedback' || it._kind === 'pick') ? it._kind : 'other';
+      const pollTag = it.poll_id ? ' · Poll: <code>'+escapeHtml(it.poll_id)+'</code>' : (it._kind === 'suggestion' ? ' · neue Frage' : '');
+      el.innerHTML = `
+        <div class="top">
+          <span class="kind-pill ${pillKind}">${escapeHtml(TK_KIND_LABEL[it._kind] || it._kind)}</span>
+          <span class="who">${escapeHtml(it.from_name || '—')}</span>
+          <span class="ts">${ds}${pollTag}</span>
+        </div>
+        ${it.title ? '<div><b>'+escapeHtml(it.title)+'</b></div>' : ''}
+        ${it.body ? '<div class="body">'+escapeHtml(it.body)+'</div>' : ''}
+        <div class="actions">
+          <button data-act="open"     ${it.status==='open'?'disabled style="opacity:.4"':''}>Offen</button>
+          <button data-act="progress" ${it.status==='progress'?'disabled style="opacity:.4"':''}>⏳ In Arbeit</button>
+          <button data-act="done"     ${it.status==='done'?'disabled style="opacity:.4"':''}>✓ Erledigt</button>
+          <button data-act="reject"   ${it.status==='reject'?'disabled style="opacity:.4"':''}>✗ Ablehnen</button>
+          ${it._kind === 'suggestion' ? '<button data-act="snippet">📋 Poll-Code</button>' : ''}
+          ${it._kind === 'feedback'   ? '<button data-act="reply">✉️ Antworten</button>' : ''}
+          <button class="del" data-act="del" title="Löschen">🗑</button>
+        </div>
+      `;
+      el.querySelectorAll('button[data-act]').forEach(btn => {
+        btn.addEventListener('click', () => handleTicketAction(it, btn.dataset.act));
+      });
+      listEl.appendChild(el);
+    });
+  }
+
+  async function handleTicketAction(it, act){
+    if(['open','progress','done','reject'].includes(act)){
+      try {
+        await Supa.update(it._src, 'id=eq.' + it._id, { status: act });
+        toast('Status: ' + statusLabel(act), 'ok');
+        renderTickets();
+        if(it._kind === 'suggestion') renderMySuggestions();
+        if(it._kind === 'feedback')   renderMyFeedback();
+      } catch(e){
+        console.error(e); toast('Update fehlgeschlagen', 'err');
+      }
+      return;
+    }
+    if(act === 'del'){
+      if(!confirm('Diesen Eintrag wirklich löschen?')) return;
+      try {
+        await Supa.remove(it._src, 'id=eq.' + it._id);
+        toast('Gelöscht', 'ok');
+        renderTickets();
+      } catch(e){
+        console.error(e); toast('Löschen fehlgeschlagen', 'err');
+      }
+      return;
+    }
+    if(act === 'snippet'){
+      // Build a JS snippet Andre can paste into the polls[] array
+      let snippet;
+      if(it.poll_id){
+        // Adding option to existing poll
+        snippet = '// Add this option to poll "' + it.poll_id + '" in the polls[] array:\n'
+                + JSON.stringify(it.title || it.body) + ',';
+      } else {
+        // Brand new poll — derive id from title
+        const id = (it.title || ('poll-' + Date.now()))
+          .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+          .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,40);
+        const opts = (it.body || '')
+          .split(/\r?\n|·|;|\|/)
+          .map(s => s.replace(/^[\s\-\*\d\.\)]+/,'').trim())
+          .filter(Boolean);
+        snippet = '// Add this entry to the polls[] array:\n'
+                + '{ id:' + JSON.stringify(id)
+                + ', q:' + JSON.stringify(it.title || '?')
+                + ', opts:' + JSON.stringify(opts.length ? opts : ['Ja','Nein']) + ' },';
+      }
+      copyToClipboard(snippet).then(() => toast('📋 Poll-Snippet kopiert', 'ok'))
+        .catch(() => { prompt('Snippet (manuell kopieren):', snippet); });
+      return;
+    }
+    if(act === 'reply'){
+      const subject = encodeURIComponent('Re: dein Feedback (Sailing Croatia)');
+      const body = encodeURIComponent('Hi ' + (it.from_name || '') + ',\n\n> ' + (it.body || '').replace(/\n/g,'\n> ') + '\n\n');
+      // Best-effort: open mailto, even without explicit email we let Andre pick the recipient
+      window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
+      return;
+    }
+  }
+
+  function copyToClipboard(text){
+    if(navigator.clipboard && window.isSecureContext){
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise((res, rej) => {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position='fixed'; ta.style.left='-9999px';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); ta.remove(); res();
+      } catch(e){ rej(e); }
+    });
+  }
+
+  // Filter tabs
+  document.querySelectorAll('.tickets-card .filters button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tickets-card .filters button').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      _tkFilter = btn.dataset.tkf;
+      renderTickets();
+    });
+  });
+
+  // Manual ticket add
+  document.getElementById('tk-add').addEventListener('click', async () => {
+    const fromEl = document.getElementById('tk-from');
+    const kindEl = document.getElementById('tk-kind');
+    const titleEl = document.getElementById('tk-title');
+    const bodyEl = document.getElementById('tk-body');
+    const from = fromEl.value.trim() || (localStorage.getItem('crewName') || 'Andre');
+    const title = titleEl.value.trim();
+    if(!title){ toast('Titel fehlt', 'err'); titleEl.focus(); return; }
+    try {
+      await Supa.insert('sc_tickets', {
+        from_name: from, kind: kindEl.value, title, body: bodyEl.value.trim() || null
+      });
+      fromEl.value=''; titleEl.value=''; bodyEl.value=''; kindEl.value='suggestion';
+      toast('✓ Ticket angelegt', 'ok');
+      renderTickets();
+    } catch(e){
+      console.error(e); toast('Fehler beim Anlegen', 'err');
+    }
+  });
 
   /* ============ AUTO-UNLOCK (must run after all const/seed defs) ============ */
   try {

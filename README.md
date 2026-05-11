@@ -16,23 +16,31 @@ Einfach `index.html` doppelklicken – läuft self-contained, keine Build-Tools 
 - **Boots-Card** Lagoon 46 „Coolway" — Hero-Foto, Spec-Grid, Equipment-Chips, klickbare Foto-Galerie (Lightbox), CTA zu Boataround
 - **Crew-Login** (Name + Passwort `sailingcroatia`) — sweet Gimmick, Name wird für Voting genutzt
 - Hero + Routen-Übersicht (Sa→Sa, ~115 NM)
-- **Eingebettete Google Maps** der Region Mittel-Dalmatien
+- **Leaflet Map** der Region Mittel-Dalmatien · Route + Monas Spots
 - **Monas Spot-Liste** prominent verlinkt (30 Spots, alle dürfen bearbeiten)
 - **Crew an Bord** Sektion: jede:r trägt eigene An-Bord-Daten + Pre/Post-Trip Pläne ein
 - Tag-für-Tag ausklappbare Karten (Distanz · Segelzeit · Liegeplatz)
 - Foodie / Insta-Sunset / Hidden-Gems pro Stop
 - Vor-Programm Trogir + Nach-Programm Split
-- Food-Planung Bord (Inputs, lokal gespeichert)
-- Crew-Voting (mit Crew-Namen, lokal getrackt)
+- Food-Planung Bord
+- **Crew-Voting** — cross-device live über Supabase
+- **Crew-Vorschläge** — Crew kann neue Voting-Optionen / Fragen einreichen
+- **Feedback-Button** — Kabinen-/Diät-/Sonderwünsche direkt an Andre
+- **Admin-Inbox** (nur für „Andre" sichtbar) — alle Vorschläge & Feedback an einem Ort, mit Status (Offen / In Arbeit / Erledigt / Abgelehnt), Quick-Action „Poll-Snippet" zum Reinkopieren
 
-## Caveat: Local-only (für jetzt)
-Crew-Liste, Voting und Food-Planung werden via `localStorage` **pro Gerät** gespeichert.
-Jeder sieht seine eigenen Eingaben, Crew-weiter Sync braucht ein Backend.
+## Backend
+Cross-device-Daten (Voting, Vorschläge, Feedback, Tickets) liegen in Supabase.
+- Projekt: `xcalfhpllpyzfycgpxtr.supabase.co` (EU-West-1)
+- Tabellen: `sc_votes`, `sc_suggestions`, `sc_feedback`, `sc_tickets`
+- Schema: [`db/setup.sql`](db/setup.sql) — einmal im Supabase SQL Editor ausführen, Public-RLS-Policies inkl.
+- Trust-Boundary: das Login-Passwort. Daten sind über den `publishable` Key öffentlich CRUD-bar — OK für eine Crew-only-App.
 
 ## Setup
 - **Passwort ändern:** in `index.html` → suche `const PW = 'sailingcroatia'` → ersetzen
 - **Default-Crew anpassen:** in `index.html` → `DEFAULT_CREW = [...]`
-- **Map zentrieren:** im iframe-`src` die `ll=43.25,16.4&z=9` Werte anpassen
+- **Admin festlegen:** in `index.html` → `function isAdmin()` — aktuell Name = `Andre` (Akzente werden normalisiert)
+- **Polls bearbeiten:** in `index.html` → `const polls = [...]` (Admin kann via Snippet-Button im Inbox automatisch passende Einträge generieren lassen)
+- **Supabase URL/Key:** in `index.html` → `SUPA_URL`, `SUPA_KEY` (publishable key ist OK im Frontend)
 
 ## GitHub Pages Deployment
 1. Repo anlegen, z.B. `sailing-croatia-2026`
@@ -49,4 +57,4 @@ Jeder sieht seine eigenen Eingaben, Crew-weiter Sync braucht ein Backend.
 - Reservierungs-Status pro Restaurant (✅/⏳/❌) mit Owner
 
 ## Inhaltsstand
-v2 · 10.05.2026 — Login, Maps, Monas Liste, Crew-an-Bord ergänzt
+v3 · 11.05.2026 — Supabase-Backend, Crew-Vorschläge, Feedback, Admin-Inbox
