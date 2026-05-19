@@ -805,6 +805,82 @@
     pointer-events:none;max-width:90vw;text-align:center;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---------- ADMIN POLL CREATOR ---------- */
+  .poll-create{
+    background:linear-gradient(180deg,#FBF6EC 0%,#fff 100%);
+    border:1px dashed rgba(11,37,69,.30);
+    border-radius:12px;padding:12px 14px;margin:10px 0 14px;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .poll-create .lead{
+    font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--navy);font-weight:700;
+  }
+  .poll-create input{
+    width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;
+    font:inherit;font-size:13px;outline:none;background:#fff;color:var(--ink);
+  }
+  .poll-create input:focus{border-color:var(--coral)}
+  .poll-opts{display:flex;flex-direction:column;gap:6px}
+  .poll-create-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+  .poll-create-actions button{
+    flex:1 1 auto;border:none;padding:9px 14px;border-radius:8px;
+    font:inherit;font-weight:700;font-size:12px;cursor:pointer;
+  }
+  #poll-new-add-opt{background:#fff;border:1px solid var(--line);color:var(--navy)}
+  #poll-new-add-opt:hover{background:#FBF6EC;border-color:var(--coral);color:var(--coral)}
+  #poll-new-save{background:var(--coral);color:#fff}
+  #poll-new-save:hover{background:#C5673F}
+
+  /* ---------- FOOD & DRINKS: sticky tabs + prominence ---------- */
+  .food-section{position:relative}
+  .food-section .planner{
+    border:1px solid rgba(216,116,79,.25);
+    box-shadow:0 12px 32px rgba(216,116,79,.08), var(--shadow);
+  }
+  .food-section .tabs{
+    position:sticky; top:0; z-index:5;
+    background:#FBF8F2;
+    /* slight overshoot to cover content edges when scrolling */
+    margin-left:-2px;margin-right:-2px;padding:4px;
+  }
+  .food-section .section-h h2 em{color:var(--coral);font-style:normal}
+
+  /* ---------- ESSEN / KOCHEN tab ---------- */
+  .cook-add{display:grid;grid-template-columns:1fr 110px;gap:6px;margin-bottom:8px}
+  .cook-add input,.cook-add select{
+    padding:9px 10px;border:1px solid var(--line);border-radius:10px;
+    font:inherit;font-size:13px;outline:none;background:#fff;color:var(--ink);
+  }
+  .cook-add input:focus,.cook-add select:focus{border-color:var(--coral)}
+  .cook-add .span2{grid-column:span 2}
+  .cook-add button{
+    grid-column:span 2;background:var(--coral);color:#fff;border:none;
+    padding:11px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer;font-size:13px;
+  }
+  .cook-add button:hover{background:#C5673F}
+  .cook-list{display:grid;gap:8px}
+  .cook-item{
+    display:grid;grid-template-columns:24px 1fr auto auto;gap:10px;align-items:center;
+    background:#FBF8F2;border:1px solid var(--line);border-radius:12px;
+    padding:10px 12px;font-size:13px;
+  }
+  .cook-item.done{opacity:.55;background:#EFEAE0}
+  .cook-item.done .dish{text-decoration:line-through}
+  .cook-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--coral);cursor:pointer}
+  .cook-item .dish{font-weight:700;color:var(--navy);font-size:14px}
+  .cook-item .meta{color:var(--muted);font-size:11px;margin-top:2px}
+  .cook-item .day{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--teal) 100%);color:#fff;
+    padding:3px 9px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.04em;
+    white-space:nowrap;
+  }
+  .cook-item .x{
+    background:none;border:none;color:#B8B8B8;cursor:pointer;font-size:16px;
+    line-height:1;padding:0 4px;
+  }
+  .cook-item .x:hover{color:var(--coral)}
 </style>
 </head>
 <body>
@@ -1056,6 +1132,98 @@
   </div>
 
   <!-- ============ DAY CARDS ============ -->
+  <!-- ============ FOOD & DRINKS (above day cards for prominence) ============ -->
+  <div class="food-section">
+    <div class="section-h"><h2><em>🍽️</em> Food &amp; Drinks an Bord</h2><span class="line"></span></div>
+
+    <div class="planner">
+      <div class="tabs" role="tablist">
+        <button class="on" data-tab="cook">👨‍🍳 Essen / Kochen</button>
+        <button data-tab="shop">🛒 Einkaufen</button>
+        <button data-tab="plan">📅 Plan</button>
+        <button data-tab="ideas">💡 Ideen</button>
+      </div>
+
+      <!-- TAB 1: Essen / Kochen (Crew dishes — Supabase, cross-device) -->
+      <div class="tabpane on" data-pane="cook">
+        <p class="small">Was wir an Bord kochen — wer kocht was an welchem Tag. Alle sehen die Liste live.</p>
+        <div class="cook-add">
+          <input id="cook-dish" class="span2" placeholder="Gericht (z.B. Spaghetti Vongole)" maxlength="80" />
+          <select id="cook-day">
+            <option value="">Tag…</option>
+            <option value="Sa 30.5">Sa 30.5</option>
+            <option value="So 31.5">So 31.5</option>
+            <option value="Mo 1.6">Mo 1.6</option>
+            <option value="Di 2.6">Di 2.6</option>
+            <option value="Mi 3.6">Mi 3.6</option>
+            <option value="Do 4.6">Do 4.6</option>
+            <option value="Fr 5.6">Fr 5.6</option>
+          </select>
+          <input id="cook-who" placeholder="Wer kocht?" maxlength="40" />
+          <input id="cook-notes" class="span2" placeholder="Notizen / Beilagen (optional)" maxlength="160" />
+          <button id="cook-add" type="button">+ Gericht</button>
+        </div>
+        <div class="cook-list" id="cook-list"></div>
+      </div>
+
+      <!-- TAB 2: Einkaufen -->
+      <div class="tabpane" data-pane="shop">
+        <p class="small">Was muss noch an Bord? Hak es ab beim Einkaufen. Jeder kann ergänzen.</p>
+        <div class="shop">
+          <div class="shop-cats" id="shop-cats">
+            <button class="shop-cat on" data-cat="all">Alle</button>
+            <button class="shop-cat" data-cat="gemuse">Obst &amp; Gemüse</button>
+            <button class="shop-cat" data-cat="brot">Brot &amp; Teig</button>
+            <button class="shop-cat" data-cat="fleisch">Fleisch &amp; Fisch</button>
+            <button class="shop-cat" data-cat="dairy">Milch &amp; Käse</button>
+            <button class="shop-cat" data-cat="snacks">Snacks</button>
+            <button class="shop-cat" data-cat="getranke">Getränke</button>
+            <button class="shop-cat" data-cat="sonstiges">Sonstiges</button>
+          </div>
+          <div class="shop-add">
+            <input id="shop-name" placeholder="Was? (z.B. Tomaten)" />
+            <input id="shop-qty" placeholder="Menge" />
+            <select id="shop-cat">
+              <option value="gemuse">Obst &amp; Gemüse</option>
+              <option value="brot">Brot &amp; Teig</option>
+              <option value="fleisch">Fleisch &amp; Fisch</option>
+              <option value="dairy">Milch &amp; Käse</option>
+              <option value="snacks">Snacks</option>
+              <option value="getranke">Getränke</option>
+              <option value="sonstiges">Sonstiges</option>
+            </select>
+            <button id="shop-add">+</button>
+          </div>
+          <div class="shop-list" id="shop-list"></div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Restaurant-Plan -->
+      <div class="tabpane" data-pane="plan">
+        <p class="small">Was läuft pro Tag — Restaurants, Reservierungen, Specials. Lokal gespeichert.</p>
+        <div class="foodboard" id="foodboard">
+          <div class="foodrow"><div class="d">Sa 30.5</div><input data-key="food-sat" placeholder="z.B. Welcome-Dinner an Bord…"></div>
+          <div class="foodrow"><div class="d">So 31.5</div><input data-key="food-sun" placeholder="z.B. Pojoda Vis"></div>
+          <div class="foodrow"><div class="d">Mo 1.6</div><input data-key="food-mon" placeholder="z.B. Toto's Palmižana"></div>
+          <div class="foodrow"><div class="d">Di 2.6</div><input data-key="food-tue" placeholder="z.B. Dalmatino Hvar"></div>
+          <div class="foodrow"><div class="d">Mi 3.6</div><input data-key="food-wed" placeholder="z.B. Konoba Vrboska"></div>
+          <div class="foodrow"><div class="d">Do 4.6</div><input data-key="food-thu" placeholder="z.B. Captain's Dinner Split"></div>
+          <div class="foodrow"><div class="d">Fr 5.6</div><input data-key="food-fri" placeholder="z.B. Last Night Trogir"></div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Ideen -->
+      <div class="tabpane" data-pane="ideas">
+        <p class="small">Brainstorm-Box: Was wollen wir essen &amp; trinken? Wirf rein.</p>
+        <div class="ideas-add">
+          <input id="idea-text" placeholder="Deine Idee… (z.B. Cacio e Pepe als Anker-Lunch)" />
+          <button id="idea-add">+ Idee</button>
+        </div>
+        <div class="ideas-list" id="ideas-list"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="section-h"><h2>Tag für Tag</h2><span class="line"></span></div>
 
   <!-- DAY 1 -->
@@ -1479,83 +1647,27 @@
     <div class="note"><b>Hotel-Picks Split:</b> <b>Heritage Antique Split</b> (boutique, im Palast), <b>Hotel Park</b> (klassisch, Pool, 10 Min vom Centrum), <b>Cornaro</b> (Rooftop-Bar mit Stadtblick).</div>
   </div>
 
-  <!-- ============ FOOD & DRINKS ============ -->
-  <div class="section-h"><h2>Food &amp; Drinks an Bord</h2><span class="line"></span></div>
-
-  <div class="planner">
-    <div class="tabs" role="tablist">
-      <button class="on" data-tab="plan">📅 Plan</button>
-      <button data-tab="shop">🛒 Einkauf</button>
-      <button data-tab="ideas">💡 Ideen</button>
-    </div>
-
-    <!-- TAB 1: Restaurant-Plan -->
-    <div class="tabpane on" data-pane="plan">
-      <p class="small">Wer kocht, wer reserviert, was läuft pro Tag. Eintippen &amp; speichern (lokal).</p>
-      <div class="foodboard" id="foodboard">
-        <div class="foodrow"><div class="d">Sa 30.5</div><input data-key="food-sat" placeholder="Crew-Brunch / Welcome-Dinner an Bord…"></div>
-        <div class="foodrow"><div class="d">So 31.5</div><input data-key="food-sun" placeholder="Frühstück / Lunch unterwegs / Pojoda Vis"></div>
-        <div class="foodrow"><div class="d">Mo 1.6</div><input data-key="food-mon" placeholder="An Bord BBQ / Toto's Palmižana"></div>
-        <div class="foodrow"><div class="d">Di 2.6</div><input data-key="food-tue" placeholder="Hvar – Dalmatino / Gariful?"></div>
-        <div class="foodrow"><div class="d">Mi 3.6</div><input data-key="food-wed" placeholder="Eremitaž Stari Grad / Konoba Vrboska"></div>
-        <div class="foodrow"><div class="d">Do 4.6</div><input data-key="food-thu" placeholder="Captain's Dinner Split – Bokeria?"></div>
-        <div class="foodrow"><div class="d">Fr 5.6</div><input data-key="food-fri" placeholder="Last Night Trogir – Foša?"></div>
-      </div>
-    </div>
-
-    <!-- TAB 2: Einkaufsliste -->
-    <div class="tabpane" data-pane="shop">
-      <p class="small">Was muss noch an Bord? Hak es ab beim Einkaufen. Crew-Mitglieder können beliebig ergänzen.</p>
-
-      <div class="shop">
-        <div class="shop-cats" id="shop-cats">
-          <button class="shop-cat on" data-cat="all">Alle</button>
-          <button class="shop-cat" data-cat="gemuse">Obst &amp; Gemüse</button>
-          <button class="shop-cat" data-cat="brot">Brot &amp; Teig</button>
-          <button class="shop-cat" data-cat="fleisch">Fleisch &amp; Fisch</button>
-          <button class="shop-cat" data-cat="dairy">Milch &amp; Käse</button>
-          <button class="shop-cat" data-cat="snacks">Snacks</button>
-          <button class="shop-cat" data-cat="getranke">Getränke</button>
-          <button class="shop-cat" data-cat="sonstiges">Sonstiges</button>
-        </div>
-
-        <div class="shop-add">
-          <input id="shop-name" placeholder="Was? (z.B. Tomaten)" />
-          <input id="shop-qty" placeholder="Menge" />
-          <select id="shop-cat">
-            <option value="gemuse">Obst &amp; Gemüse</option>
-            <option value="brot">Brot &amp; Teig</option>
-            <option value="fleisch">Fleisch &amp; Fisch</option>
-            <option value="dairy">Milch &amp; Käse</option>
-            <option value="snacks">Snacks</option>
-            <option value="getranke">Getränke</option>
-            <option value="sonstiges">Sonstiges</option>
-          </select>
-          <button id="shop-add">+</button>
-        </div>
-
-        <div class="shop-list" id="shop-list"></div>
-      </div>
-    </div>
-
-    <!-- TAB 3: Food-Ideen -->
-    <div class="tabpane" data-pane="ideas">
-      <p class="small">Brainstorm-Box: Was wollen wir an Bord essen &amp; trinken? Spaghetti Vongole am 2. Abend? Aperol auf Anker? Wirf rein.</p>
-
-      <div class="ideas-add">
-        <input id="idea-text" placeholder="Deine Idee… (z.B. Cacio e Pepe als Anker-Lunch)" />
-        <button id="idea-add">+ Idee</button>
-      </div>
-
-      <div class="ideas-list" id="ideas-list"></div>
-    </div>
-  </div>
-
   <!-- ============ ABSTIMMUNG ============ -->
   <div class="section-h"><h2>Crew Abstimmung</h2><span class="line"></span></div>
 
   <div class="planner">
-    <div class="small">Tipp &amp; entscheid mit – Stimmen werden lokal pro Gerät getrackt. Du fehlt was zur Auswahl? Schick André unten einen Vorschlag.</div>
+    <div class="small">Tipp &amp; entscheid mit – Stimmen sehen alle live. Du fehlt was zur Auswahl? Schick André unten einen Vorschlag.</div>
+
+    <!-- Admin-only: create new poll -->
+    <div class="picks-admin">
+      <div class="poll-create">
+        <div class="lead">🛡️ Admin · Neue Abstimmung</div>
+        <input id="poll-new-q" placeholder="Die Frage – z.B. „Welcher Strand am Mittwoch?"" maxlength="160" />
+        <div id="poll-new-opts" class="poll-opts">
+          <input class="poll-opt" placeholder="Antwort 1" maxlength="80" />
+          <input class="poll-opt" placeholder="Antwort 2" maxlength="80" />
+        </div>
+        <div class="poll-create-actions">
+          <button id="poll-new-add-opt" type="button">+ Option</button>
+          <button id="poll-new-save" type="button">📊 Abstimmung anlegen</button>
+        </div>
+      </div>
+    </div>
 
     <div id="votes"></div>
 
@@ -1723,20 +1835,22 @@
   goBtn.addEventListener('click', tryLogin);
   [nameI, pwI].forEach(i => i.addEventListener('keydown', e => { if(e.key === 'Enter') tryLogin(); }));
 
-  function unlock(){
+  async function unlock(){
     lock.classList.add('hidden');
     const me = localStorage.getItem('crewName') || '';
     document.getElementById('who-name').textContent = me || '—';
-    seedMeIntoCrew(me);
     applyAdminVisibility();
+    // Seed crew row for current user (async), then re-render
+    seedMeIntoCrew(me).then(() => renderCrew());
     renderCrew();
     renderVotes();
     renderPicks();
     renderShop();
     renderIdeas();
+    renderCooking();
     renderMySuggestions();
     renderMyFeedback();
-    populateSuggestionPolls();
+    // populateSuggestionPolls is called from renderVotes after polls load
     if(isAdmin()) renderTickets();
   }
 
@@ -1745,6 +1859,8 @@
     if(document.hidden) return;
     if(!localStorage.getItem('crewName')) return;
     renderVotes();
+    renderCrew();
+    renderCooking();
     renderMySuggestions();
     renderMyFeedback();
     if(isAdmin()) renderTickets();
@@ -1757,122 +1873,189 @@
     location.reload();
   });
 
-  /* ============ CREW LIST ============ */
-  const DEFAULT_CREW = [
-    {name:'Simon',  nick:'Käpt\'n Sim',     role:'🧭 Captain',                task:'Plan, Knoten, Manöver – der mit dem Wetter im Kopf'},
-    {name:'André',  nick:'Sommelier-Dré',   role:'🍷 Aperol-Beauftragter',     task:'Drink-Karte, Sundowner-Timing, Spotify-Co-Pilot'},
-    {name:'Jana',   nick:'Sunny Jane',      role:'☀️ Sun-Manager',             task:'Sonnencreme-Polizei + Buchten-Scout'},
-    {name:'Mona',   nick:'Chefin Mo',       role:'🍽️ Chef de Cuisine',         task:'Restaurant-Scout, Reservierungs-Queen'},
-    {name:'Hans',   nick:'Anker-Hans',      role:'⚓ Bootsmann',                task:'Anker, Fender, Leinen – der mit dem Knoten-Wissen'},
-    {name:'Alessa', nick:'DJ Less',         role:'🎶 DJ an Bord',              task:'Spotify-Boss, Sundowner-Soundtrack'},
-    {name:'Luzy',   nick:'Insta-Lu',        role:'📸 Foto-Beauftragte',        task:'Drohnen-Shots, Crew-Reels, Reise-Doku'}
-  ];
+  /* ============ CREW LIST (Supabase, cross-device) ============ */
+  // Local cache mirrors sc_crew so the UI is never empty during a refresh.
+  let _crewCache = null;
 
+  function _loadCrewLocal(){
+    try { return JSON.parse(localStorage.getItem('crew-cache-v2') || '[]'); }
+    catch(e){ return []; }
+  }
+  function _saveCrewLocal(arr){
+    try { localStorage.setItem('crew-cache-v2', JSON.stringify(arr)); } catch(e){}
+  }
   function getCrew(){
-    const stored = localStorage.getItem('crew-list');
-    if(stored){
-      try {
-        const arr = JSON.parse(stored);
-        return arr.map(p => ({nick:'', role:'', task:'', from:'', to:'', plan:'', ...p}));
-      } catch(e){}
+    return _crewCache || _loadCrewLocal();
+  }
+  async function loadCrew(){
+    try {
+      const rows = await Supa.select('sc_crew',
+        'select=id,name,nick,role,task,from_date,to_date,plan,order_index&order=order_index.asc,name.asc');
+      _crewCache = rows.map(r => ({
+        id: r.id,
+        name: r.name || '',
+        nick: r.nick || '',
+        role: r.role || '',
+        task: r.task || '',
+        from: r.from_date || '',
+        to:   r.to_date   || '',
+        plan: r.plan || '',
+        order_index: r.order_index ?? 100
+      }));
+      _saveCrewLocal(_crewCache);
+      return _crewCache;
+    } catch(e){
+      console.error('loadCrew failed, using cache:', e);
+      _crewCache = _loadCrewLocal();
+      return _crewCache;
     }
-    return DEFAULT_CREW.map(p => ({...p, from:'2026-05-30', to:'2026-06-06', plan:''}));
   }
 
-  // One-time migration: seed nick/role/task for existing crew matching DEFAULT_CREW
-  if(!localStorage.getItem('roles-seeded-v1')){
-    const c = getCrew();
-    let changed = false;
-    c.forEach(p => {
-      const def = DEFAULT_CREW.find(d => d.name.toLowerCase() === p.name.toLowerCase());
-      if(def && !p.role){
-        p.nick = def.nick; p.role = def.role; p.task = def.task;
-        changed = true;
-      }
-    });
-    if(changed) setCrew(c);
-    localStorage.setItem('roles-seeded-v1','1');
+  function crewIdFromName(n){
+    const slug = (n || '').toString().trim().toLowerCase().normalize('NFD')
+      .replace(/[̀-ͯ]/g,'')
+      .replace(/[^a-z0-9]+/g,'-')
+      .replace(/(^-|-$)/g,'');
+    return slug || ('crew-' + Date.now().toString(36));
   }
-  function setCrew(c){ localStorage.setItem('crew-list', JSON.stringify(c)); }
 
-  function seedMeIntoCrew(me){
+  async function seedMeIntoCrew(me){
     if(!me) return;
-    const c = getCrew();
-    const exists = c.some(p => p.name.toLowerCase() === me.toLowerCase());
-    if(!exists){
-      c.push({name: me, from:'', to:'', plan:''});
-      setCrew(c);
+    const id = crewIdFromName(me);
+    // Match either by id slug OR by case-insensitive name in cache (handles ä/é etc.)
+    const cache = getCrew();
+    const exists = cache.some(p => p.id === id || (p.name||'').toLowerCase() === me.toLowerCase());
+    if(exists) return;
+    try {
+      await Supa.insert('sc_crew', {
+        id,
+        name: me,
+        from_date: '2026-05-30',
+        to_date: '2026-06-06',
+        order_index: 200
+      });
+      await loadCrew();
+    } catch(e){
+      console.error('seedMeIntoCrew failed:', e);
     }
   }
 
-  function renderCrew(){
+  // Debounced field updates so typing doesn't hammer the API
+  const _crewWriteTimers = {};
+  function scheduleCrewWrite(id, patch){
+    clearTimeout(_crewWriteTimers[id]);
+    _crewWriteTimers[id] = setTimeout(async () => {
+      // Reflect change in cache immediately
+      const cache = getCrew();
+      const row = cache.find(p => p.id === id);
+      if(row) Object.assign(row, patch);
+      _saveCrewLocal(cache);
+      try {
+        const dbPatch = {...patch};
+        // Translate field names: from→from_date, to→to_date
+        if('from' in dbPatch){ dbPatch.from_date = dbPatch.from || null; delete dbPatch.from; }
+        if('to'   in dbPatch){ dbPatch.to_date   = dbPatch.to   || null; delete dbPatch.to;   }
+        dbPatch.updated_at = new Date().toISOString();
+        await Supa.update('sc_crew', 'id=eq.' + encodeURIComponent(id), dbPatch);
+      } catch(e){
+        console.error('crew save failed:', e);
+        toast('Speichern fehlgeschlagen — Internet?', 'err');
+      }
+    }, 600);
+  }
+
+  async function renderCrew(opts){
     const root = document.getElementById('crewlist');
     if(!root) return;
+    const force = opts && opts.force;
+    // Render cache first
+    drawCrew(root);
+    try {
+      await loadCrew();
+      drawCrew(root);
+    } catch(e){ console.error(e); }
+  }
+
+  function drawCrew(root){
     const me = (localStorage.getItem('crewName') || '').toLowerCase();
     const crew = getCrew();
     root.innerHTML = '';
-    crew.forEach((p,i) => {
-      const isMe = p.name.toLowerCase() === me;
-      const isCaptain = (p.role||'').toLowerCase().includes('captain');
+    crew.forEach(p => {
+      const isMe = (p.name || '').toLowerCase() === me;
+      const isCaptain = (p.role || '').toLowerCase().includes('captain');
       const row = document.createElement('div');
       row.className = 'crewrow' + (isMe ? ' me' : '') + (isCaptain ? ' captain' : '');
+      row.dataset.id = p.id;
       row.innerHTML = `
         <div class="head">
           <div class="name">
             ${isMe ? '<span class="dotme"></span>' : ''}${escapeHtml(p.name)}${isMe ? ' <span class="pill coral" style="margin-left:6px">du</span>' : ''}
             ${p.role ? '<span class="role-tag">'+escapeHtml(p.role)+'</span>' : ''}
           </div>
-          <button class="x" data-i="${i}" title="entfernen">×</button>
+          <button class="x" data-cid="${escapeHtml(p.id)}" title="entfernen">×</button>
         </div>
         ${p.task ? '<div class="task-display">'+escapeHtml(p.task)+'</div>' : ''}
         <div class="nickrole">
-          <div><label>Spitzname</label><input data-i="${i}" data-k="nick" placeholder="z.B. Käpt'n Sim" value="${escapeHtml(p.nick||'')}"></div>
-          <div><label>Rolle</label><input data-i="${i}" data-k="role" placeholder="z.B. ⚓ Bootsmann" value="${escapeHtml(p.role||'')}"></div>
+          <div><label>Spitzname</label><input data-cid="${escapeHtml(p.id)}" data-k="nick" placeholder="z.B. Käpt'n Sim" value="${escapeHtml(p.nick||'')}"></div>
+          <div><label>Rolle</label><input data-cid="${escapeHtml(p.id)}" data-k="role" placeholder="z.B. ⚓ Bootsmann" value="${escapeHtml(p.role||'')}"></div>
         </div>
         <label>Aufgabe / Funktion</label>
-        <input data-i="${i}" data-k="task" placeholder="z.B. Anker-Beauftragter, Knoten-Master" value="${escapeHtml(p.task||'')}" style="margin-bottom:8px">
+        <input data-cid="${escapeHtml(p.id)}" data-k="task" placeholder="z.B. Anker-Beauftragter, Knoten-Master" value="${escapeHtml(p.task||'')}" style="margin-bottom:8px">
         <div class="fields">
-          <div><label>An Bord von</label><input data-i="${i}" data-k="from" type="date" value="${p.from||''}"></div>
-          <div><label>bis</label><input data-i="${i}" data-k="to" type="date" value="${p.to||''}"></div>
+          <div><label>An Bord von</label><input data-cid="${escapeHtml(p.id)}" data-k="from" type="date" value="${escapeHtml(p.from||'')}"></div>
+          <div><label>bis</label><input data-cid="${escapeHtml(p.id)}" data-k="to" type="date" value="${escapeHtml(p.to||'')}"></div>
         </div>
         <label>Vor / nach Bord</label>
-        <textarea data-i="${i}" data-k="plan" placeholder="z.B. 28.–30.5. Trogir Hotel Brown Beach · 6.–8.6. Split Heritage Antique">${escapeHtml(p.plan||'')}</textarea>
+        <textarea data-cid="${escapeHtml(p.id)}" data-k="plan" placeholder="z.B. 28.–30.5. Trogir Hotel Brown Beach · 6.–8.6. Split Heritage Antique">${escapeHtml(p.plan||'')}</textarea>
       `;
       root.appendChild(row);
     });
     root.querySelectorAll('input[data-k], textarea[data-k]').forEach(el => {
       el.addEventListener('input', () => {
-        const c = getCrew();
-        c[el.dataset.i][el.dataset.k] = el.value;
-        setCrew(c);
+        scheduleCrewWrite(el.dataset.cid, { [el.dataset.k]: el.value });
       });
     });
     root.querySelectorAll('.x').forEach(b => {
-      b.addEventListener('click', () => {
+      b.addEventListener('click', async () => {
+        const cid = b.dataset.cid;
         const c = getCrew();
-        const idx = parseInt(b.dataset.i);
-        if(confirm('„' + c[idx].name + '" aus der Crew-Liste entfernen?')){
-          c.splice(idx, 1);
-          setCrew(c);
-          renderCrew();
+        const row = c.find(p => p.id === cid);
+        if(!row) return;
+        if(!confirm('„' + row.name + '" aus der Crew-Liste entfernen?')) return;
+        try {
+          await Supa.remove('sc_crew', 'id=eq.' + encodeURIComponent(cid));
+          toast('Entfernt', 'ok');
+          await renderCrew();
+        } catch(e){
+          console.error(e); toast('Löschen fehlgeschlagen', 'err');
         }
       });
     });
   }
 
-  document.getElementById('add-crew-btn').addEventListener('click', () => {
+  document.getElementById('add-crew-btn').addEventListener('click', async () => {
     const inp = document.getElementById('new-crew');
     const n = inp.value.trim();
     if(!n) return;
-    const c = getCrew();
-    if(c.some(p => p.name.toLowerCase() === n.toLowerCase())){
-      alert('Name ist schon in der Liste');
-      return;
+    const cache = getCrew();
+    if(cache.some(p => (p.name || '').toLowerCase() === n.toLowerCase())){
+      toast('Name ist schon in der Liste', 'err'); return;
     }
-    c.push({name:n, from:'', to:'', plan:''});
-    setCrew(c);
-    inp.value = '';
-    renderCrew();
+    const id = crewIdFromName(n);
+    try {
+      await Supa.insert('sc_crew', {
+        id, name: n,
+        from_date: '2026-05-30', to_date: '2026-06-06',
+        order_index: 250
+      });
+      inp.value = '';
+      toast('✓ Hinzugefügt', 'ok');
+      await renderCrew();
+    } catch(e){
+      console.error(e);
+      // Likely duplicate id; tell user
+      toast('Konnte nicht hinzufügen (vielleicht schon vorhanden?)', 'err');
+    }
   });
   document.getElementById('new-crew').addEventListener('keydown', e => {
     if(e.key === 'Enter') document.getElementById('add-crew-btn').click();
@@ -1892,14 +2075,33 @@
     inp.addEventListener('input', ()=> localStorage.setItem(k, inp.value));
   });
 
-  /* ============ VOTING (mit Crew-Namen) ============ */
-  const polls = [
-    { id:'vis-tour',   q:'Vis Military Jeep-Tour mitnehmen?',                       opts:['Ja, klingt wild','Nein, lieber chillen'] },
-    { id:'peka',       q:'Peka vorbestellen in Šešula (Maslinica)?',                opts:['Lamm','Oktopus','Beides – Crew = hungrig'] },
-    { id:'hvar-night', q:'Hvar Town: Carpe Diem Beach Late Night?',                 opts:['100%','Lieber früh ins Bett'] },
-    { id:'split-din',  q:'Captains-Dinner Split (Do 4.6.):',                        opts:['Bokeria','Bajamonti','An Bord kochen'] },
-    { id:'brac-stop',  q:'Mittagsstopp Zlatni Rat / Bol auf dem Weg nach Split?',   opts:['Yes','Skip'] }
-  ];
+  /* ============ VOTING (Polls aus Supabase) ============ */
+  // polls is loaded from sc_polls; empty until first fetch.
+  let polls = [];
+
+  async function loadPolls(){
+    try {
+      const rows = await Supa.select('sc_polls',
+        'select=id,question,options,order_index,created_at&order=order_index.asc,created_at.asc');
+      polls = rows.map(r => ({
+        id: r.id,
+        q: r.question,
+        opts: Array.isArray(r.options) ? r.options : []
+      }));
+    } catch(e){
+      console.error('loadPolls failed:', e);
+      polls = [];
+    }
+    return polls;
+  }
+
+  function slugify(s){
+    return (s || '').toString().toLowerCase().normalize('NFD')
+      .replace(/[̀-ͯ]/g,'')
+      .replace(/[^a-z0-9]+/g,'-')
+      .replace(/(^-|-$)/g,'')
+      .slice(0,48) || ('poll-' + Date.now().toString(36));
+  }
 
   // Cross-device votes via Supabase, with local cache for instant render & offline.
   let _votesCache = null;
@@ -1972,12 +2174,12 @@
     if(!wrap) return;
     const me = (localStorage.getItem('crewName') || '').trim();
 
-    // Render immediately from cache so the UI is never empty
+    // Render from current state immediately (cache + last polls) so UI isn't empty
     drawVotes(wrap, me);
-    // Then refresh from server and re-draw if anything changed
     try {
-      await loadAllVotes(true);
+      await Promise.all([loadPolls(), loadAllVotes(true)]);
       drawVotes(wrap, me);
+      populateSuggestionPolls();
     } catch(e){
       console.error('renderVotes refresh failed:', e);
     }
@@ -1985,10 +2187,24 @@
 
   function drawVotes(wrap, me){
     wrap.innerHTML = '';
+    if(!polls.length){
+      wrap.innerHTML = '<p style="color:var(--muted);font-style:italic;font-size:13px;margin:8px 0">' +
+        (isAdmin()
+          ? 'Noch keine Abstimmung. Leg unten im Admin-Panel die erste an.'
+          : 'Noch keine Abstimmung — sobald André eine startet, taucht sie hier auf.') +
+        '</p>';
+      return;
+    }
     polls.forEach(p => {
       const card = document.createElement('div');
       card.style.marginBottom = '16px';
-      card.innerHTML = '<div style="font-weight:600;margin:6px 0 8px;color:var(--navy)">'+escapeHtml(p.q)+'</div>';
+      const deleteBtn = isAdmin()
+        ? `<button data-act="del-poll" data-pid="${escapeHtml(p.id)}" title="Abstimmung löschen" style="background:none;border:none;color:#B8B8B8;cursor:pointer;font-size:16px;padding:0 4px;float:right">×</button>`
+        : '';
+      card.innerHTML = '<div style="font-weight:600;margin:6px 0 8px;color:var(--navy);display:flex;align-items:center;gap:8px">'
+        + '<span style="flex:1">'+escapeHtml(p.q)+'</span>'
+        + deleteBtn
+        + '</div>';
 
       const votes = getPollVotes(p.id);
       const counts = p.opts.map((_,i) => Object.values(votes).filter(v => v === i).length);
@@ -2019,6 +2235,24 @@
         });
         card.appendChild(row);
       });
+      const delBtn = card.querySelector('button[data-act="del-poll"]');
+      if(delBtn){
+        delBtn.addEventListener('click', async (ev) => {
+          ev.stopPropagation();
+          if(!confirm('Abstimmung „'+ p.q +'" wirklich löschen? Alle Stimmen gehen verloren.')) return;
+          try {
+            await Promise.all([
+              Supa.remove('sc_polls', 'id=eq.' + encodeURIComponent(p.id)),
+              Supa.remove('sc_votes', 'poll_id=eq.' + encodeURIComponent(p.id))
+            ]);
+            toast('Abstimmung gelöscht', 'ok');
+            await renderVotes();
+            populateSuggestionPolls();
+          } catch(e){
+            console.error(e); toast('Löschen fehlgeschlagen', 'err');
+          }
+        });
+      }
       wrap.appendChild(card);
     });
   }
@@ -2219,22 +2453,7 @@
       const stored = JSON.parse(localStorage.getItem('shop-list') || 'null');
       if(stored) return stored;
     } catch(e){}
-    // Default seed
-    return [
-      {n:'Tomaten', q:'1 kg', cat:'gemuse', done:false, by:''},
-      {n:'Frisches Brot', q:'2 Laibe', cat:'brot', done:false, by:''},
-      {n:'Olivenöl', q:'1 Flasche', cat:'sonstiges', done:false, by:''},
-      {n:'Wasser still', q:'24 × 1.5L', cat:'getranke', done:false, by:''},
-      {n:'Wasser sprudelnd', q:'12 × 1.5L', cat:'getranke', done:false, by:''},
-      {n:'Bier (Karlovačko/Ožujsko)', q:'2 Kisten', cat:'getranke', done:false, by:''},
-      {n:'Pošip Weißwein', q:'6 Flaschen', cat:'getranke', done:false, by:''},
-      {n:'Aperol + Prosecco', q:'je 2', cat:'getranke', done:false, by:''},
-      {n:'Eier', q:'18er Pack', cat:'dairy', done:false, by:''},
-      {n:'Kaffee gemahlen', q:'500g', cat:'sonstiges', done:false, by:''},
-      {n:'Pršut Schinken', q:'300g', cat:'fleisch', done:false, by:''},
-      {n:'Paški sir Käse', q:'250g', cat:'dairy', done:false, by:''},
-      {n:'Erdnüsse / Pistazien', q:'mix', cat:'snacks', done:false, by:''}
-    ];
+    return [];  // start empty — crew adds what they need
   }
   function setShop(arr){ localStorage.setItem('shop-list', JSON.stringify(arr)); }
 
@@ -2314,14 +2533,7 @@
       const stored = JSON.parse(localStorage.getItem('food-ideas') || 'null');
       if(stored) return stored;
     } catch(e){}
-    return [
-      {t:'Spaghetti Vongole am 2. Abend (Vis Hafen)', by:''},
-      {t:'Aperol-Boat-Brunch in der Šešula-Bucht', by:''},
-      {t:'Peka Lamm vorbestellen Konoba Šešula', by:''},
-      {t:'Cacio e Pepe als Anker-Lunch', by:''},
-      {t:'Frische Dorade vom Markt grillen', by:''},
-      {t:'Captain\'s Welcome-Cocktail: Gin Tonic mit Rosmarin', by:''}
-    ];
+    return [];  // start empty — crew brainstorm only
   }
   function setIdeas(arr){ localStorage.setItem('food-ideas', JSON.stringify(arr)); }
 
@@ -2369,6 +2581,96 @@
   });
   document.getElementById('idea-text').addEventListener('keydown', e => {
     if(e.key === 'Enter') document.getElementById('idea-add').click();
+  });
+
+  /* ============ ESSEN / KOCHEN (Supabase, cross-device) ============ */
+  const COOK_DAY_ORDER = ['Sa 30.5','So 31.5','Mo 1.6','Di 2.6','Mi 3.6','Do 4.6','Fr 5.6'];
+
+  async function renderCooking(){
+    const list = document.getElementById('cook-list');
+    if(!list) return;
+    list.innerHTML = '<p class="small" style="color:var(--muted);font-style:italic">Lade…</p>';
+    let rows;
+    try {
+      rows = await Supa.select('sc_cooking', 'select=*&order=created_at.asc');
+    } catch(e){
+      console.error('renderCooking failed:', e);
+      list.innerHTML = '<p class="small" style="color:var(--muted);font-style:italic">Konnte Liste nicht laden — Internet?</p>';
+      return;
+    }
+    if(!rows.length){
+      list.innerHTML = '<p class="small" style="color:var(--muted);font-style:italic;margin:6px 0">Noch keine Gerichte. Was bringst du an Bord?</p>';
+      return;
+    }
+    // Sort by day order (unknown days last), then created_at
+    rows.sort((a,b) => {
+      const ai = COOK_DAY_ORDER.indexOf(a.day || ''); const bi = COOK_DAY_ORDER.indexOf(b.day || '');
+      const aw = ai === -1 ? 999 : ai; const bw = bi === -1 ? 999 : bi;
+      if(aw !== bw) return aw - bw;
+      return (a.created_at || '').localeCompare(b.created_at || '');
+    });
+    list.innerHTML = '';
+    rows.forEach(it => {
+      const el = document.createElement('div');
+      el.className = 'cook-item' + (it.done ? ' done' : '');
+      const meta = [];
+      if(it.who_cooks) meta.push('👨‍🍳 ' + it.who_cooks);
+      if(it.by_name && it.by_name !== it.who_cooks) meta.push('eingetragen von ' + it.by_name);
+      if(it.notes) meta.push(it.notes);
+      el.innerHTML = `
+        <input type="checkbox" data-id="${it.id}" ${it.done ? 'checked' : ''} />
+        <div>
+          <div class="dish">${escapeHtml(it.dish)}</div>
+          ${meta.length ? '<div class="meta">'+escapeHtml(meta.join(' · '))+'</div>' : ''}
+        </div>
+        ${it.day ? '<span class="day">'+escapeHtml(it.day)+'</span>' : '<span></span>'}
+        <button class="x" data-id="${it.id}" title="löschen">×</button>
+      `;
+      list.appendChild(el);
+    });
+    list.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', async () => {
+        try {
+          await Supa.update('sc_cooking', 'id=eq.' + cb.dataset.id, { done: cb.checked });
+          renderCooking();
+        } catch(e){ console.error(e); toast('Speichern fehlgeschlagen', 'err'); cb.checked = !cb.checked; }
+      });
+    });
+    list.querySelectorAll('.x').forEach(b => {
+      b.addEventListener('click', async () => {
+        try {
+          await Supa.remove('sc_cooking', 'id=eq.' + b.dataset.id);
+          renderCooking();
+        } catch(e){ console.error(e); toast('Löschen fehlgeschlagen', 'err'); }
+      });
+    });
+  }
+
+  document.getElementById('cook-add').addEventListener('click', async () => {
+    const dishEl = document.getElementById('cook-dish');
+    const dayEl = document.getElementById('cook-day');
+    const whoEl = document.getElementById('cook-who');
+    const notesEl = document.getElementById('cook-notes');
+    const me = (localStorage.getItem('crewName') || '').trim();
+    const dish = dishEl.value.trim();
+    if(!dish){ toast('Gericht eingeben', 'err'); dishEl.focus(); return; }
+    try {
+      await Supa.insert('sc_cooking', {
+        dish,
+        who_cooks: whoEl.value.trim() || me || null,
+        day: dayEl.value || null,
+        notes: notesEl.value.trim() || null,
+        by_name: me || null
+      });
+      dishEl.value=''; whoEl.value=''; notesEl.value=''; dayEl.value='';
+      toast('✓ Gericht eingetragen', 'ok');
+      renderCooking();
+    } catch(e){
+      console.error(e); toast('Anlegen fehlgeschlagen', 'err');
+    }
+  });
+  document.getElementById('cook-dish').addEventListener('keydown', e => {
+    if(e.key === 'Enter') document.getElementById('cook-add').click();
   });
 
   /* ============ LEAFLET MAP — Simons Route ============ */
@@ -2513,6 +2815,63 @@
   } else {
     initMonaMap();
   }
+
+  /* ============ ADMIN: CREATE POLL ============ */
+  (function(){
+    const addOptBtn = document.getElementById('poll-new-add-opt');
+    const saveBtn = document.getElementById('poll-new-save');
+    const optsWrap = document.getElementById('poll-new-opts');
+    if(!addOptBtn || !saveBtn || !optsWrap) return;
+
+    addOptBtn.addEventListener('click', () => {
+      const existing = optsWrap.querySelectorAll('.poll-opt').length;
+      if(existing >= 6){ toast('Max. 6 Optionen', 'err'); return; }
+      const inp = document.createElement('input');
+      inp.className = 'poll-opt';
+      inp.placeholder = 'Antwort ' + (existing + 1);
+      inp.maxLength = 80;
+      optsWrap.appendChild(inp);
+      inp.focus();
+    });
+
+    saveBtn.addEventListener('click', async () => {
+      const qEl = document.getElementById('poll-new-q');
+      const q = qEl.value.trim();
+      const opts = Array.from(optsWrap.querySelectorAll('.poll-opt'))
+        .map(i => i.value.trim()).filter(Boolean);
+      if(!q){ toast('Frage fehlt', 'err'); qEl.focus(); return; }
+      if(opts.length < 2){ toast('Mindestens 2 Antworten', 'err'); return; }
+      // Unique id
+      let id = slugify(q);
+      try {
+        const existing = await Supa.select('sc_polls', 'select=id&id=eq.' + encodeURIComponent(id));
+        if(existing.length){ id = id + '-' + Date.now().toString(36).slice(-4); }
+      } catch(e){}
+      const orderIdx = (polls.length + 1) * 10;
+      saveBtn.disabled = true; const orig = saveBtn.textContent; saveBtn.textContent = 'Lege an…';
+      try {
+        await Supa.insert('sc_polls', {
+          id, question: q, options: opts, order_index: orderIdx,
+          created_by: (localStorage.getItem('crewName') || '').trim() || null
+        });
+        qEl.value = '';
+        // Reset options to 2 empties
+        optsWrap.innerHTML = '';
+        for(let i=0;i<2;i++){
+          const inp = document.createElement('input');
+          inp.className='poll-opt'; inp.placeholder='Antwort '+(i+1); inp.maxLength=80;
+          optsWrap.appendChild(inp);
+        }
+        toast('✓ Abstimmung angelegt', 'ok');
+        await renderVotes();
+        populateSuggestionPolls();
+      } catch(e){
+        console.error(e); toast('Anlegen fehlgeschlagen', 'err');
+      } finally {
+        saveBtn.disabled = false; saveBtn.textContent = orig;
+      }
+    });
+  })();
 
   /* ============ SUGGESTIONS (Crew → Admin) ============ */
   function populateSuggestionPolls(){
