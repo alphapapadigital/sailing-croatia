@@ -833,19 +833,77 @@
   #poll-new-save{background:var(--coral);color:#fff}
   #poll-new-save:hover{background:#C5673F}
 
-  /* ---------- FOOD & DRINKS: sticky tabs + prominence ---------- */
-  .food-section{position:relative}
+  /* ---------- FOOD & DRINKS: prominent card + sticky tabs ---------- */
+  .food-section{
+    position:relative;
+    background:linear-gradient(180deg,#FFF8F0 0%, #FBF8F2 100%);
+    border:3px solid var(--coral);
+    border-radius:22px;
+    padding:18px 16px 14px;
+    margin:8px 0 22px;
+    box-shadow:0 16px 40px rgba(216,116,79,.18), 0 4px 12px rgba(11,37,69,.06);
+  }
+  .food-section::before{
+    content:"";position:absolute;top:-1px;left:-1px;right:-1px;height:8px;
+    background:linear-gradient(90deg,var(--coral) 0%, var(--gold) 50%, var(--teal) 100%);
+    border-radius:20px 20px 0 0;
+  }
+  .food-section .food-head{margin:6px 0 10px}
+  .food-section .food-head .lead{
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--coral);font-weight:700;margin-bottom:4px;
+  }
+  .food-section .food-head h2{
+    font-size:24px;line-height:1.1;color:var(--navy);margin:0;
+  }
+  .food-intro{
+    background:#fff;border:1px solid rgba(216,116,79,.18);
+    border-radius:14px;padding:12px 14px;margin-bottom:14px;
+  }
+  .food-intro-row{display:flex;gap:10px;align-items:flex-start;padding:5px 0;font-size:13px;color:var(--ink)}
+  .food-intro-row b{color:var(--navy)}
+  .food-intro-ico{font-size:18px;line-height:1;flex:0 0 24px;text-align:center}
+  .food-intro-note{
+    margin-top:8px;padding-top:8px;border-top:1px dashed rgba(216,116,79,.25);
+    font-size:11px;color:var(--muted);font-style:italic;
+  }
   .food-section .planner{
-    border:1px solid rgba(216,116,79,.25);
-    box-shadow:0 12px 32px rgba(216,116,79,.08), var(--shadow);
+    background:#fff;
+    border:1px solid var(--line);
+    box-shadow:none;
+    padding:14px;
   }
   .food-section .tabs{
-    position:sticky; top:0; z-index:5;
+    position:sticky; top:8px; z-index:6;
     background:#FBF8F2;
-    /* slight overshoot to cover content edges when scrolling */
-    margin-left:-2px;margin-right:-2px;padding:4px;
+    border:1px solid var(--line);
+    margin:-4px -4px 12px;padding:4px;
+    box-shadow:0 4px 10px rgba(11,37,69,.06);
+    backdrop-filter:saturate(140%);
   }
-  .food-section .section-h h2 em{color:var(--coral);font-style:normal}
+  .food-section .tabs button{font-size:12px}
+  @media (max-width:380px){
+    .food-section .tabs button{padding:8px 4px;font-size:11px}
+  }
+
+  /* Floating "back to Food" pill that shows when food section scrolls out of view */
+  .food-fab{
+    position:fixed;right:14px;bottom:18px;z-index:120;
+    display:none;align-items:center;gap:6px;
+    background:var(--coral);color:#fff;border:none;
+    padding:11px 16px;border-radius:999px;cursor:pointer;
+    font:inherit;font-weight:700;font-size:13px;
+    box-shadow:0 10px 24px rgba(216,116,79,.45),0 2px 6px rgba(0,0,0,.18);
+    transition:transform .2s ease, opacity .2s ease;
+  }
+  .food-fab.show{display:inline-flex;opacity:.95}
+  .food-fab:hover{background:#C5673F;transform:translateY(-1px);opacity:1}
+  .food-fab:active{transform:translateY(0)}
+  .food-fab .lbl{letter-spacing:.02em}
+  @media (max-width:380px){
+    .food-fab .lbl{display:none}
+    .food-fab{padding:12px}
+  }
 
   /* ---------- ESSEN / KOCHEN tab ---------- */
   .cook-add{display:grid;grid-template-columns:1fr 110px;gap:6px;margin-bottom:8px}
@@ -1036,6 +1094,115 @@
     </div>
   </div>
 
+  <!-- ============ FOOD & DRINKS (prominent block between map & Mona's list) ============ -->
+  <div class="food-section" id="food-section">
+    <div class="food-head">
+      <div class="lead">🍽️ Crew Food &amp; Drinks · Live für alle</div>
+      <h2>Was kommt an Bord?</h2>
+    </div>
+
+    <!-- Anleitung -->
+    <div class="food-intro">
+      <div class="food-intro-row"><span class="food-intro-ico">👨‍🍳</span><div><b>Essen / Kochen</b> — Gerichte, die wir an Bord kochen. Trag ein, was du machen willst &amp; an welchem Tag.</div></div>
+      <div class="food-intro-row"><span class="food-intro-ico">🛒</span><div><b>Einkaufen</b> — gemeinsame Liste. Beim Einkauf abhaken, jeder kann ergänzen.</div></div>
+      <div class="food-intro-row"><span class="food-intro-ico">📅</span><div><b>Plan</b> — Restaurant-Plan pro Tag. Wer reserviert wo?</div></div>
+      <div class="food-intro-row"><span class="food-intro-ico">💡</span><div><b>Ideen</b> — Brainstorm-Box für alles, was uns einfällt.</div></div>
+      <div class="food-intro-note">📡 Alles synchronisiert sich live über alle Geräte. Tippst du was, sehen es alle.</div>
+    </div>
+
+    <div class="planner">
+      <div class="tabs" role="tablist">
+        <button class="on" data-tab="cook">👨‍🍳 Essen / Kochen</button>
+        <button data-tab="shop">🛒 Einkaufen</button>
+        <button data-tab="plan">📅 Plan</button>
+        <button data-tab="ideas">💡 Ideen</button>
+      </div>
+
+      <!-- TAB 1: Essen / Kochen -->
+      <div class="tabpane on" data-pane="cook">
+        <p class="small">Was wir an Bord kochen — wer kocht was an welchem Tag.</p>
+        <div class="cook-add">
+          <input id="cook-dish" class="span2" placeholder="Gericht (z.B. Spaghetti Vongole)" maxlength="80" />
+          <select id="cook-day">
+            <option value="">Tag…</option>
+            <option value="Sa 30.5">Sa 30.5</option>
+            <option value="So 31.5">So 31.5</option>
+            <option value="Mo 1.6">Mo 1.6</option>
+            <option value="Di 2.6">Di 2.6</option>
+            <option value="Mi 3.6">Mi 3.6</option>
+            <option value="Do 4.6">Do 4.6</option>
+            <option value="Fr 5.6">Fr 5.6</option>
+          </select>
+          <input id="cook-who" placeholder="Wer kocht?" maxlength="40" />
+          <input id="cook-notes" class="span2" placeholder="Notizen / Beilagen (optional)" maxlength="160" />
+          <button id="cook-add" type="button">+ Gericht</button>
+        </div>
+        <div class="cook-list" id="cook-list"></div>
+      </div>
+
+      <!-- TAB 2: Einkaufen -->
+      <div class="tabpane" data-pane="shop">
+        <p class="small">Was muss noch an Bord? Hak es ab beim Einkaufen. Jeder kann ergänzen.</p>
+        <div class="shop">
+          <div class="shop-cats" id="shop-cats">
+            <button class="shop-cat on" data-cat="all">Alle</button>
+            <button class="shop-cat" data-cat="gemuse">Obst &amp; Gemüse</button>
+            <button class="shop-cat" data-cat="brot">Brot &amp; Teig</button>
+            <button class="shop-cat" data-cat="fleisch">Fleisch &amp; Fisch</button>
+            <button class="shop-cat" data-cat="dairy">Milch &amp; Käse</button>
+            <button class="shop-cat" data-cat="snacks">Snacks</button>
+            <button class="shop-cat" data-cat="getranke">Getränke</button>
+            <button class="shop-cat" data-cat="sonstiges">Sonstiges</button>
+          </div>
+          <div class="shop-add">
+            <input id="shop-name" placeholder="Was? (z.B. Tomaten)" />
+            <input id="shop-qty" placeholder="Menge" />
+            <select id="shop-cat">
+              <option value="gemuse">Obst &amp; Gemüse</option>
+              <option value="brot">Brot &amp; Teig</option>
+              <option value="fleisch">Fleisch &amp; Fisch</option>
+              <option value="dairy">Milch &amp; Käse</option>
+              <option value="snacks">Snacks</option>
+              <option value="getranke">Getränke</option>
+              <option value="sonstiges">Sonstiges</option>
+            </select>
+            <button id="shop-add">+</button>
+          </div>
+          <div class="shop-list" id="shop-list"></div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Restaurant-Plan -->
+      <div class="tabpane" data-pane="plan">
+        <p class="small">Restaurant-Plan pro Tag — wer reserviert wo. Lokal gespeichert.</p>
+        <div class="foodboard" id="foodboard">
+          <div class="foodrow"><div class="d">Sa 30.5</div><input data-key="food-sat" placeholder="z.B. Welcome-Dinner an Bord…"></div>
+          <div class="foodrow"><div class="d">So 31.5</div><input data-key="food-sun" placeholder="z.B. Pojoda Vis"></div>
+          <div class="foodrow"><div class="d">Mo 1.6</div><input data-key="food-mon" placeholder="z.B. Toto's Palmižana"></div>
+          <div class="foodrow"><div class="d">Di 2.6</div><input data-key="food-tue" placeholder="z.B. Dalmatino Hvar"></div>
+          <div class="foodrow"><div class="d">Mi 3.6</div><input data-key="food-wed" placeholder="z.B. Konoba Vrboska"></div>
+          <div class="foodrow"><div class="d">Do 4.6</div><input data-key="food-thu" placeholder="z.B. Captain's Dinner Split"></div>
+          <div class="foodrow"><div class="d">Fr 5.6</div><input data-key="food-fri" placeholder="z.B. Last Night Trogir"></div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Ideen -->
+      <div class="tabpane" data-pane="ideas">
+        <p class="small">Brainstorm-Box: Was wollen wir essen &amp; trinken?</p>
+        <div class="ideas-add">
+          <input id="idea-text" placeholder="Deine Idee… (z.B. Cacio e Pepe als Anker-Lunch)" />
+          <button id="idea-add">+ Idee</button>
+        </div>
+        <div class="ideas-list" id="ideas-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating shortcut back to Food when scrolled past -->
+  <button class="food-fab" id="food-fab" type="button" aria-label="Zu Food &amp; Drinks springen" hidden>
+    <span>🍽️</span><span class="lbl">Food &amp; Drinks</span>
+  </button>
+
   <!-- ============ MONA'S LIST ============ -->
   <div class="listcard">
     <div class="meta">📍 Crew-Spotliste · von Mona</div>
@@ -1132,98 +1299,6 @@
   </div>
 
   <!-- ============ DAY CARDS ============ -->
-  <!-- ============ FOOD & DRINKS (above day cards for prominence) ============ -->
-  <div class="food-section">
-    <div class="section-h"><h2><em>🍽️</em> Food &amp; Drinks an Bord</h2><span class="line"></span></div>
-
-    <div class="planner">
-      <div class="tabs" role="tablist">
-        <button class="on" data-tab="cook">👨‍🍳 Essen / Kochen</button>
-        <button data-tab="shop">🛒 Einkaufen</button>
-        <button data-tab="plan">📅 Plan</button>
-        <button data-tab="ideas">💡 Ideen</button>
-      </div>
-
-      <!-- TAB 1: Essen / Kochen (Crew dishes — Supabase, cross-device) -->
-      <div class="tabpane on" data-pane="cook">
-        <p class="small">Was wir an Bord kochen — wer kocht was an welchem Tag. Alle sehen die Liste live.</p>
-        <div class="cook-add">
-          <input id="cook-dish" class="span2" placeholder="Gericht (z.B. Spaghetti Vongole)" maxlength="80" />
-          <select id="cook-day">
-            <option value="">Tag…</option>
-            <option value="Sa 30.5">Sa 30.5</option>
-            <option value="So 31.5">So 31.5</option>
-            <option value="Mo 1.6">Mo 1.6</option>
-            <option value="Di 2.6">Di 2.6</option>
-            <option value="Mi 3.6">Mi 3.6</option>
-            <option value="Do 4.6">Do 4.6</option>
-            <option value="Fr 5.6">Fr 5.6</option>
-          </select>
-          <input id="cook-who" placeholder="Wer kocht?" maxlength="40" />
-          <input id="cook-notes" class="span2" placeholder="Notizen / Beilagen (optional)" maxlength="160" />
-          <button id="cook-add" type="button">+ Gericht</button>
-        </div>
-        <div class="cook-list" id="cook-list"></div>
-      </div>
-
-      <!-- TAB 2: Einkaufen -->
-      <div class="tabpane" data-pane="shop">
-        <p class="small">Was muss noch an Bord? Hak es ab beim Einkaufen. Jeder kann ergänzen.</p>
-        <div class="shop">
-          <div class="shop-cats" id="shop-cats">
-            <button class="shop-cat on" data-cat="all">Alle</button>
-            <button class="shop-cat" data-cat="gemuse">Obst &amp; Gemüse</button>
-            <button class="shop-cat" data-cat="brot">Brot &amp; Teig</button>
-            <button class="shop-cat" data-cat="fleisch">Fleisch &amp; Fisch</button>
-            <button class="shop-cat" data-cat="dairy">Milch &amp; Käse</button>
-            <button class="shop-cat" data-cat="snacks">Snacks</button>
-            <button class="shop-cat" data-cat="getranke">Getränke</button>
-            <button class="shop-cat" data-cat="sonstiges">Sonstiges</button>
-          </div>
-          <div class="shop-add">
-            <input id="shop-name" placeholder="Was? (z.B. Tomaten)" />
-            <input id="shop-qty" placeholder="Menge" />
-            <select id="shop-cat">
-              <option value="gemuse">Obst &amp; Gemüse</option>
-              <option value="brot">Brot &amp; Teig</option>
-              <option value="fleisch">Fleisch &amp; Fisch</option>
-              <option value="dairy">Milch &amp; Käse</option>
-              <option value="snacks">Snacks</option>
-              <option value="getranke">Getränke</option>
-              <option value="sonstiges">Sonstiges</option>
-            </select>
-            <button id="shop-add">+</button>
-          </div>
-          <div class="shop-list" id="shop-list"></div>
-        </div>
-      </div>
-
-      <!-- TAB 3: Restaurant-Plan -->
-      <div class="tabpane" data-pane="plan">
-        <p class="small">Was läuft pro Tag — Restaurants, Reservierungen, Specials. Lokal gespeichert.</p>
-        <div class="foodboard" id="foodboard">
-          <div class="foodrow"><div class="d">Sa 30.5</div><input data-key="food-sat" placeholder="z.B. Welcome-Dinner an Bord…"></div>
-          <div class="foodrow"><div class="d">So 31.5</div><input data-key="food-sun" placeholder="z.B. Pojoda Vis"></div>
-          <div class="foodrow"><div class="d">Mo 1.6</div><input data-key="food-mon" placeholder="z.B. Toto's Palmižana"></div>
-          <div class="foodrow"><div class="d">Di 2.6</div><input data-key="food-tue" placeholder="z.B. Dalmatino Hvar"></div>
-          <div class="foodrow"><div class="d">Mi 3.6</div><input data-key="food-wed" placeholder="z.B. Konoba Vrboska"></div>
-          <div class="foodrow"><div class="d">Do 4.6</div><input data-key="food-thu" placeholder="z.B. Captain's Dinner Split"></div>
-          <div class="foodrow"><div class="d">Fr 5.6</div><input data-key="food-fri" placeholder="z.B. Last Night Trogir"></div>
-        </div>
-      </div>
-
-      <!-- TAB 4: Ideen -->
-      <div class="tabpane" data-pane="ideas">
-        <p class="small">Brainstorm-Box: Was wollen wir essen &amp; trinken? Wirf rein.</p>
-        <div class="ideas-add">
-          <input id="idea-text" placeholder="Deine Idee… (z.B. Cacio e Pepe als Anker-Lunch)" />
-          <button id="idea-add">+ Idee</button>
-        </div>
-        <div class="ideas-list" id="ideas-list"></div>
-      </div>
-    </div>
-  </div>
-
   <div class="section-h"><h2>Tag für Tag</h2><span class="line"></span></div>
 
   <!-- DAY 1 -->
@@ -2582,6 +2657,34 @@
   document.getElementById('idea-text').addEventListener('keydown', e => {
     if(e.key === 'Enter') document.getElementById('idea-add').click();
   });
+
+  /* ============ FLOATING FAB: back-to-food ============ */
+  (function(){
+    const sec = document.getElementById('food-section');
+    const fab = document.getElementById('food-fab');
+    if(!sec || !fab) return;
+    fab.removeAttribute('hidden');
+    fab.addEventListener('click', () => sec.scrollIntoView({behavior:'smooth', block:'start'}));
+
+    let ticking = false;
+    function check(){
+      ticking = false;
+      const r = sec.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      // Show whenever the section is fully out of viewport (above OR below)
+      const out = r.bottom < 0 || r.top > vh;
+      fab.classList.toggle('show', out);
+    }
+    function onScroll(){
+      if(ticking) return;
+      ticking = true;
+      requestAnimationFrame(check);
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', onScroll, {passive:true});
+    // Initial check
+    check();
+  })();
 
   /* ============ ESSEN / KOCHEN (Supabase, cross-device) ============ */
   const COOK_DAY_ORDER = ['Sa 30.5','So 31.5','Mo 1.6','Di 2.6','Mi 3.6','Do 4.6','Fr 5.6'];
